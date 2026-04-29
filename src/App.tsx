@@ -1,3 +1,5 @@
+import { Analytics } from "@vercel/analytics/react";
+
 import { About } from "@/components/portfolio/About";
 import { Contact } from "@/components/portfolio/Contact";
 import { Hero } from "@/components/portfolio/Hero";
@@ -16,6 +18,7 @@ export function App() {
       <Stack />
       <Projects />
       <Contact />
+      <Analytics />
     </main>
   );
 }
