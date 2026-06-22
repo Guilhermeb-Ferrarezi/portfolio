@@ -4,11 +4,10 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const ACCESS_KEY = "9069535e-dbf1-4395-8d4a-887d90cbb9f9";
+const ACCESS_KEY = import.meta.env.WEB3FORMS
 
 const TITLE: { t: string; p?: boolean; i?: boolean }[] = [
-  { t: "Vamos" }, { t: "tirar" }, { t: "sua" },
-  { t: "ideia", p: true, i: true }, { t: "do" }, { t: "papel?" },
+  { t: "Entre" }, { t: "em" }, { t: "contato", p: true },
 ];
 
 const ICON = {
@@ -38,7 +37,7 @@ const ICON = {
 };
 
 const channels = [
-  { k: "e-mail", v: "guilherme@guilhermebf.dev", href: "mailto:guilherme@guilhermebf.dev", icon: ICON.mail },
+  { k: "e-mail", v: "contato@guilhermebf.dev", href: "mailto:contato@guilhermebf.dev", icon: ICON.mail },
   { k: "github", v: "Guilhermeb-Ferrarezi", href: "https://github.com/Guilhermeb-Ferrarezi", icon: ICON.github },
   { k: "instagram", v: "@guilherme38_38", href: "https://instagram.com/guilherme38_38", icon: ICON.instagram },
 ];
@@ -50,18 +49,54 @@ export function Contact() {
   const [status, setStatus] = useState<Status>("idle");
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>(".contact-node").forEach((node) => {
-        gsap.from(node, {
-          y: 24,
-          opacity: 0,
-          duration: 0.6,
-          ease: "power3.out",
-          scrollTrigger: { trigger: node, start: "top 88%", toggleActions: "play none none none" },
+    const sec = sectionRef.current;
+    if (!sec) return;
+    let ctx: gsap.Context | null = null;
+
+    const raf = requestAnimationFrame(() => {
+      const isMobile = window.matchMedia("(max-width: 768px)").matches;
+      const conn = sec.querySelector<SVGPathElement>(".contact-conn-path");
+      const spine = sec.querySelector<HTMLElement>(".contact-spine");
+      const pjNodes = document.querySelectorAll<SVGCircleElement>("#projetos .pj-node-spine");
+
+      // Conector: liga o último nó da spine de Projetos ao nó // contato
+      if (!isMobile && conn && spine && pjNodes.length) {
+        const cRect = sec.getBoundingClientRect();
+        const a = pjNodes[pjNodes.length - 1].getBoundingClientRect();
+        const s = spine.getBoundingClientRect();
+        const ax = a.left + a.width / 2 - cRect.left;
+        const ay = a.top + a.height / 2 - cRect.top; // negativo (acima da seção)
+        const bx = s.left + s.width / 2 - cRect.left;
+        const by = s.top - cRect.top;
+        const midY = ay + (by - ay) * 0.5;
+        conn.setAttribute("d", `M ${ax} ${ay} L ${ax} ${midY} L ${bx} ${midY} L ${bx} ${by}`);
+      }
+
+      ctx = gsap.context(() => {
+        gsap.utils.toArray<HTMLElement>(".contact-node").forEach((node) => {
+          gsap.from(node, {
+            y: 24,
+            opacity: 0,
+            duration: 0.6,
+            ease: "power3.out",
+            scrollTrigger: { trigger: node, start: "top 88%", toggleActions: "play none none none" },
+          });
         });
-      });
-    }, sectionRef);
-    return () => ctx.revert();
+
+        if (conn && conn.getTotalLength() > 0) {
+          const len = conn.getTotalLength();
+          gsap.set(conn, { strokeDasharray: len, strokeDashoffset: len });
+          gsap.to(conn, {
+            strokeDashoffset: 0,
+            duration: 0.9,
+            ease: "power2.out",
+            scrollTrigger: { trigger: sec, start: "top 78%", toggleActions: "play none none none" },
+          });
+        }
+      }, sec);
+    });
+
+    return () => { cancelAnimationFrame(raf); ctx?.revert(); };
   }, []);
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -90,9 +125,17 @@ export function Contact() {
     <section
       id="contato"
       ref={sectionRef}
-      style={{ maxWidth: "1100px", margin: "0 auto", padding: "110px 48px 0", boxSizing: "border-box" }}
+      style={{ maxWidth: "1100px", margin: "0 auto", padding: "110px 48px 0", boxSizing: "border-box", position: "relative" }}
     >
-      <div className="contact-wrap">
+      {/* Conector que vem do último nó da spine de Projetos até o nó // contato */}
+      <svg
+        aria-hidden="true"
+        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", overflow: "visible", pointerEvents: "none", zIndex: 0 }}
+      >
+        <path className="contact-conn-path" stroke="var(--c-p)" strokeWidth="1.5" fill="none" opacity="0.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+
+      <div className="contact-wrap" style={{ position: "relative", zIndex: 1 }}>
         <span className="contact-spine" aria-hidden="true" />
 
         {/* Cabeçalho */}

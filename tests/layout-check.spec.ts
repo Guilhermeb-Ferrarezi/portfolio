@@ -96,6 +96,15 @@ test.describe("Desktop 1280", () => {
     await page.screenshot({ path: "tests/screenshots/new-pc-07-contato.png" });
   });
 
+  test("transicao projetos-contato", async ({ page }) => {
+    await page.evaluate(() => {
+      const c = document.getElementById("contato");
+      if (c) window.scrollTo({ top: window.scrollY + c.getBoundingClientRect().top - 240, behavior: "instant" });
+    });
+    await page.waitForTimeout(1500);
+    await page.screenshot({ path: "tests/screenshots/new-pc-08-conn.png" });
+  });
+
   test("screenshot fullscreen", async ({ page }) => {
     await scrollToId(page, "projetos");
     await page.locator(".zig-row").first().click();
