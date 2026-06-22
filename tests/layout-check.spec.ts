@@ -147,6 +147,11 @@ test.describe("Mobile 390", () => {
     await skipPreloader(page);
   });
 
+  test("hero", async ({ page }) => {
+    await page.waitForTimeout(3200);
+    await page.screenshot({ path: "tests/screenshots/new-m-00-hero.png" });
+  });
+
   test("stack", async ({ page }) => {
     await scrollToId(page, "stack");
     await page.screenshot({ path: "tests/screenshots/new-m-01-stack.png" });

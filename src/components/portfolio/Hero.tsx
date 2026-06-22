@@ -115,6 +115,7 @@ export function Hero() {
     let W = 0, H = 0;
     let flowPts: { x: number; y: number }[] = [];
     let nameParts: { x: number; y: number; tx: number; ty: number }[] = [];
+    let dot = 3;
     let tt = 0;
     const FLOW_N = reduced ? 0 : 200;
 
@@ -125,12 +126,15 @@ export function Hero() {
       o.fillStyle = "#fff";
       o.textAlign = "center";
       o.textBaseline = "middle";
-      const fs = Math.min(W * 0.13, 168);
+      // fonte maior proporcionalmente no mobile pra o nome não ficar minúsculo
+      const fs = W < 600 ? Math.min(W * 0.165, 110) : Math.min(W * 0.12, 158);
       o.font = `900 ${fs}px "Space Grotesk", sans-serif`;
       o.fillText(NAME[0], W / 2, H / 2 - fs * 0.5);
       o.fillText(NAME[1], W / 2, H / 2 + fs * 0.52);
       const d = o.getImageData(0, 0, W, H).data;
-      const gap = Math.max(6, Math.round(fs / 23));
+      // densidade proporcional ao tamanho (mais pontos por letra = legível)
+      const gap = Math.max(3, Math.round(fs / 26));
+      dot = gap >= 5 ? 3 : 2;
       const targets: [number, number][] = [];
       for (let y = 0; y < H; y += gap) for (let x = 0; x < W; x += gap) {
         if (d[(y * W + x) * 4 + 3] > 128) targets.push([x, y]);
@@ -192,7 +196,7 @@ export function Hero() {
         p.y += (p.ty - p.y) * 0.09;
         const dx = p.x - mouse.x, dy = p.y - mouse.y, md = Math.hypot(dx, dy);
         if (md < 80) { p.x += (dx / md) * 4; p.y += (dy / md) * 4; }
-        nctx.fillRect(p.x, p.y, 3, 3);
+        nctx.fillRect(p.x, p.y, dot, dot);
       }
     };
 
