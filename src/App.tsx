@@ -3,6 +3,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Sun, Moon } from "lucide-react";
 import { About } from "@/components/portfolio/About";
+import { Contact } from "@/components/portfolio/Contact";
 import { Hero } from "@/components/portfolio/Hero";
 import { Projects } from "@/components/portfolio/Projects";
 import { Preloader } from "@/components/portfolio/Preloader";
@@ -143,6 +144,7 @@ function AppInner() {
       <About />
       <TechTree />
       <Projects />
+      <Contact />
       <Snowfall color="purple" snowflakeCount={120}/>
     </div>
   );

@@ -89,6 +89,13 @@ test.describe("Desktop 1280", () => {
     await page.screenshot({ path: "tests/screenshots/new-pc-05-modal.png" });
   });
 
+  test("contato", async ({ page }) => {
+    await scrollToId(page, "contato");
+    await page.evaluate(() => window.scrollBy({ top: 500, behavior: "instant" }));
+    await page.waitForTimeout(1200);
+    await page.screenshot({ path: "tests/screenshots/new-pc-07-contato.png" });
+  });
+
   test("screenshot fullscreen", async ({ page }) => {
     await scrollToId(page, "projetos");
     await page.locator(".zig-row").first().click();

@@ -187,6 +187,31 @@
   transition: border-color 0.18s, background 0.18s, transform 0.18s, box-shadow 0.18s;
 }
 
+/* ── CONTATO (circuito) ─────────────────────────────────── */
+.contact-wrap { position: relative; padding-left: 52px; }
+.contact-spine {
+  position: absolute; left: 16px; top: 6px; bottom: 78px; width: 1.5px;
+  background: linear-gradient(to bottom, transparent, var(--c-p) 6%, var(--c-p) 90%, transparent);
+  opacity: 0.45; pointer-events: none;
+}
+.contact-node { position: relative; }
+.contact-node::before {
+  content: ""; position: absolute; left: -36px; top: 11px; width: 22px; height: 1.5px;
+  background: var(--c-p); opacity: 0.5;
+}
+.contact-node::after {
+  content: ""; position: absolute; left: -19px; top: 7px; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--c-p); box-shadow: 0 0 8px var(--c-p);
+}
+.contact-input {
+  width: 100%; box-sizing: border-box; background: var(--c-s); border: 1px solid var(--c-b);
+  border-radius: 9px; padding: 12px 14px; color: var(--c-fg);
+  font-family: "JetBrains Mono", monospace; font-size: 13.5px;
+  outline: none; transition: border-color 0.15s, background 0.15s;
+}
+.contact-input:focus { border-color: var(--c-ps); background: var(--c-sh); }
+.contact-input::placeholder { color: var(--c-mid); }
+
 /* ── RESPONSIVE ─────────────────────────────────────────── */
 @media (max-width: 768px) {
   /* linha lateral: esconde no mobile */
@@ -223,6 +248,11 @@
 
   /* projetos: circuito não faz sentido em coluna única */
   .pj-svg { display: none !important; }
+
+  /* contato: sem spine/ramos no mobile, form em coluna única */
+  .contact-wrap { padding-left: 0 !important; }
+  .contact-spine, .contact-node::before, .contact-node::after { display: none !important; }
+  .contact-form-row { grid-template-columns: 1fr !important; }
 }
 
 @media (max-width: 480px) {

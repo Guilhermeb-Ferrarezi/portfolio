@@ -1,203 +1,277 @@
-import { useEffect } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useRef, useState, type FormEvent, type CSSProperties } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const TITLE: { text: string; purple?: boolean; italic?: boolean }[] = [
-  { text: "Vamos" },
-  { text: "tirar" },
-  { text: "sua" },
-  { text: "ideia", purple: true, italic: true },
-  { text: "do" },
-  { text: "papel?" },
+const ACCESS_KEY = "9069535e-dbf1-4395-8d4a-887d90cbb9f9";
+
+const TITLE: { t: string; p?: boolean; i?: boolean }[] = [
+  { t: "Vamos" }, { t: "tirar" }, { t: "sua" },
+  { t: "ideia", p: true, i: true }, { t: "do" }, { t: "papel?" },
 ];
 
-const links = [
-  {
-    label: "WhatsApp · (16) 99612-9511",
-    href: "https://wa.me/5516996129511",
-    primary: true,
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M20.52 3.449C18.24 1.245 15.24 0 12.045 0 5.463 0 .104 5.334.101 11.893c0 2.096.549 4.14 1.595 5.945L0 24l6.335-1.652c1.746.943 3.71 1.444 5.71 1.447h.006c6.585 0 11.946-5.336 11.949-11.896 0-3.176-1.24-6.165-3.495-8.411z" />
-      </svg>
-    ),
-  },
-  {
-    label: "guilherme@guilhermebf.dev",
-    href: "mailto:guilherme@guilhermebf.dev",
-    icon: (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-        <polyline points="22,6 12,13 2,6" />
-      </svg>
-    ),
-  },
-  {
-    label: "Guilhermeb-Ferrarezi",
-    href: "https://github.com/Guilhermeb-Ferrarezi",
-    icon: (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
-      </svg>
-    ),
-  },
-  {
-    label: "@guilherme38_38",
-    href: "https://instagram.com/guilherme38_38",
-    icon: (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <rect x="2" y="2" width="20" height="20" rx="5" />
-        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-      </svg>
-    ),
-  },
+const ICON = {
+  whatsapp: (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M20.52 3.449C18.24 1.245 15.24 0 12.045 0 5.463 0 .104 5.334.101 11.893c0 2.096.549 4.14 1.595 5.945L0 24l6.335-1.652c1.746.943 3.71 1.444 5.71 1.447h.006c6.585 0 11.946-5.336 11.949-11.896 0-3.176-1.24-6.165-3.495-8.411z" />
+    </svg>
+  ),
+  mail: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+      <polyline points="22,6 12,13 2,6" />
+    </svg>
+  ),
+  github: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+    </svg>
+  ),
+  instagram: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <rect x="2" y="2" width="20" height="20" rx="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+    </svg>
+  ),
+};
+
+const channels = [
+  { k: "e-mail", v: "guilherme@guilhermebf.dev", href: "mailto:guilherme@guilhermebf.dev", icon: ICON.mail },
+  { k: "github", v: "Guilhermeb-Ferrarezi", href: "https://github.com/Guilhermeb-Ferrarezi", icon: ICON.github },
+  { k: "instagram", v: "@guilherme38_38", href: "https://instagram.com/guilherme38_38", icon: ICON.instagram },
 ];
+
+type Status = "idle" | "sending" | "ok" | "error";
 
 export function Contact() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [status, setStatus] = useState<Status>("idle");
+
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        ".contact-word",
-        { opacity: 0.1 },
-        {
-          opacity: 1,
-          stagger: 0.14,
-          ease: "none",
-          scrollTrigger: {
-            trigger: "#contato",
-            start: "top 55%",
-            end: "center 20%",
-            scrub: 1.8,
-          },
-        }
-      );
-      gsap.fromTo(
-        ".contact-link",
-        { y: 50, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          stagger: 0.1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: ".contact-links-grid",
-            start: "top 80%",
-            end: "top 35%",
-            scrub: 1.4,
-          },
-        }
-      );
-    }, "#contato");
+      gsap.utils.toArray<HTMLElement>(".contact-node").forEach((node) => {
+        gsap.from(node, {
+          y: 24,
+          opacity: 0,
+          duration: 0.6,
+          ease: "power3.out",
+          scrollTrigger: { trigger: node, start: "top 88%", toggleActions: "play none none none" },
+        });
+      });
+    }, sectionRef);
     return () => ctx.revert();
   }, []);
 
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    setStatus("sending");
+    const fd = new FormData(form);
+    fd.append("access_key", ACCESS_KEY);
+    fd.append("subject", "Novo contato pelo portfólio 🚀");
+    fd.append("from_name", "Portfólio · Guilherme Ferrarezi");
+    try {
+      const res = await fetch("https://api.web3forms.com/submit", { method: "POST", body: fd });
+      const data = await res.json();
+      if (data.success) {
+        setStatus("ok");
+        form.reset();
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
+  };
+
   return (
-    <section id="contato" style={{ padding: "96px 48px 0", maxWidth: "1160px", margin: "0 auto" }}>
-      <div style={{ textAlign: "center", maxWidth: "560px", margin: "0 auto" }}>
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "11px", textTransform: "uppercase", letterSpacing: ".12em", color: "var(--c-p)", marginBottom: "14px" }}
-        >
-          Contato
-        </motion.p>
+    <section
+      id="contato"
+      ref={sectionRef}
+      style={{ maxWidth: "1100px", margin: "0 auto", padding: "110px 48px 0", boxSizing: "border-box" }}
+    >
+      <div className="contact-wrap">
+        <span className="contact-spine" aria-hidden="true" />
 
-        <h2
-          style={{
-            fontSize: "clamp(2.8rem,5.5vw,4.6rem)",
-            fontWeight: 800,
-            letterSpacing: "-.04em",
-            lineHeight: 1.05,
-            marginBottom: "16px",
-            fontFamily: "Space Grotesk, sans-serif",
-          }}
-        >
-          {TITLE.map((w, i) => (
-            <span
-              key={i}
-              className="contact-word"
-              style={{
-                display: "inline-block",
-                marginRight: "0.25em",
-                opacity: 0.1,
-                color: w.purple ? "var(--c-p)" : "var(--c-fg)",
-                fontStyle: w.italic ? "italic" : "normal",
-              }}
-            >
-              {w.text}
-            </span>
-          ))}
-        </h2>
+        {/* Cabeçalho */}
+        <div className="contact-node" style={{ marginBottom: "44px" }}>
+          <p
+            style={{
+              fontFamily: "JetBrains Mono, monospace",
+              fontSize: "11px",
+              textTransform: "uppercase",
+              letterSpacing: ".14em",
+              color: "var(--c-p)",
+              marginBottom: "16px",
+            }}
+          >
+            // contato
+          </p>
+          <h2
+            style={{
+              fontFamily: "Space Grotesk, sans-serif",
+              fontSize: "clamp(2.4rem, 5vw, 4rem)",
+              fontWeight: 800,
+              letterSpacing: "-.04em",
+              lineHeight: 1.04,
+              color: "var(--c-fg)",
+              margin: 0,
+            }}
+          >
+            {TITLE.map((w, i) => (
+              <span
+                key={i}
+                style={{
+                  display: "inline-block",
+                  marginRight: "0.25em",
+                  color: w.p ? "var(--c-p)" : "var(--c-fg)",
+                  fontStyle: w.i ? "italic" : "normal",
+                }}
+              >
+                {w.t}
+              </span>
+            ))}
+          </h2>
+          <p style={{ fontSize: "15px", color: "var(--c-muted)", lineHeight: 1.7, maxWidth: "46ch", marginTop: "18px" }}>
+            Disponível pra novos projetos, parcerias e oportunidades. Manda uma mensagem — respondo rapidinho.
+          </p>
+        </div>
 
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-          style={{ fontSize: "15.5px", color: "var(--c-muted)", marginBottom: "44px", lineHeight: 1.65 }}
-        >
-          Tenho disponibilidade pra novos projetos, parcerias e oportunidades.
-          Manda uma mensagem — respondo rapidinho.
-        </motion.p>
+        {/* Formulário */}
+        <div className="contact-node" style={{ marginBottom: "40px", maxWidth: "580px" }}>
+          <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+            <div className="contact-form-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+              <label style={fieldLabel}>
+                <span style={fieldCap}>nome</span>
+                <input className="contact-input" name="name" type="text" required placeholder="Seu nome" />
+              </label>
+              <label style={fieldLabel}>
+                <span style={fieldCap}>e-mail</span>
+                <input className="contact-input" name="email" type="email" required placeholder="voce@email.com" />
+              </label>
+            </div>
+            <label style={fieldLabel}>
+              <span style={fieldCap}>mensagem</span>
+              <textarea className="contact-input" name="message" required rows={4} placeholder="Conta um pouco da sua ideia..." style={{ resize: "vertical", minHeight: "104px" }} />
+            </label>
 
-        <div
-          className="contact-links-grid"
-          style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "9px", maxWidth: "460px", margin: "0 auto" }}
-        >
-          {links.map((l) => (
-            <a
-              key={l.label}
-              href={l.href}
-              target={l.href.startsWith("http") ? "_blank" : undefined}
-              rel="noopener noreferrer"
-              className="contact-link"
-              style={{
-                ...(l.primary
-                  ? { gridColumn: "1 / -1", background: "var(--c-p)", border: "1px solid var(--c-p)", borderRadius: "12px", color: "#fff", fontWeight: 500 }
-                  : { background: "var(--c-s)", border: "1px solid var(--c-b)", borderRadius: "12px", backdropFilter: "blur(8px)" }),
-                padding: "13px 18px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: "10px",
-                textDecoration: "none",
-                color: l.primary ? "#fff" : "var(--c-fg)",
-                fontSize: "13.5px",
-                fontFamily: "JetBrains Mono, monospace",
-                transition: "all .2s",
-              }}
-              onMouseEnter={(e) => {
-                if (l.primary) { e.currentTarget.style.opacity = ".86"; }
-                else { e.currentTarget.style.borderColor = "var(--c-bh)"; e.currentTarget.style.background = "var(--c-sh)"; }
-              }}
-              onMouseLeave={(e) => {
-                if (l.primary) { e.currentTarget.style.opacity = "1"; }
-                else { e.currentTarget.style.borderColor = "var(--c-b)"; e.currentTarget.style.background = "var(--c-s)"; }
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: "9px" }}>{l.icon}{l.label}</div>
-              <span style={{ fontSize: "12px" }}>↗</span>
-            </a>
-          ))}
+            {/* honeypot anti-spam (escondido) */}
+            <input type="checkbox" name="botcheck" tabIndex={-1} autoComplete="off" style={{ display: "none" }} aria-hidden="true" />
+
+            <div style={{ display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap", marginTop: "4px" }}>
+              <button
+                type="submit"
+                disabled={status === "sending"}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "9px",
+                  padding: "13px 24px",
+                  background: "var(--c-p)",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "10px",
+                  fontFamily: "JetBrains Mono, monospace",
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  cursor: status === "sending" ? "default" : "pointer",
+                  opacity: status === "sending" ? 0.7 : 1,
+                  transition: "opacity .15s, transform .15s",
+                }}
+                onMouseEnter={(e) => { if (status !== "sending") e.currentTarget.style.transform = "translateY(-1px)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = "none"; }}
+              >
+                {status === "sending" ? "enviando…" : status === "ok" ? "enviada ✓" : "Enviar mensagem →"}
+              </button>
+
+              {status === "ok" && (
+                <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "12.5px", color: "#28c840" }}>
+                  valeu! respondo em breve.
+                </span>
+              )}
+              {status === "error" && (
+                <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "12.5px", color: "#ff5f57" }}>
+                  algo deu errado — tenta de novo ou chama no WhatsApp.
+                </span>
+              )}
+            </div>
+          </form>
+        </div>
+
+        {/* Canais diretos */}
+        <div className="contact-node">
+          <a
+            href="https://wa.me/5516996129511"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "10px",
+              padding: "12px 20px",
+              background: "var(--c-pd)",
+              border: "1px solid var(--c-ps)",
+              borderRadius: "10px",
+              color: "var(--c-fg)",
+              textDecoration: "none",
+              fontFamily: "JetBrains Mono, monospace",
+              fontSize: "13.5px",
+              marginBottom: "18px",
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(139,92,246,0.18)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "var(--c-pd)"; }}
+          >
+            <span style={{ color: "var(--c-p)" }}>{ICON.whatsapp}</span>
+            WhatsApp · (16) 99612-9511
+            <span style={{ color: "var(--c-mid)" }}>↗</span>
+          </a>
+
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "9px" }}>
+            {channels.map((c) => (
+              <a
+                key={c.k}
+                href={c.href}
+                target={c.href.startsWith("http") ? "_blank" : undefined}
+                rel="noopener noreferrer"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "9px",
+                  padding: "10px 15px",
+                  background: "var(--c-s)",
+                  border: "1px solid var(--c-b)",
+                  borderRadius: "10px",
+                  color: "var(--c-fg)",
+                  textDecoration: "none",
+                  fontFamily: "JetBrains Mono, monospace",
+                  fontSize: "12.5px",
+                  transition: "border-color .15s, background .15s",
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.borderColor = "var(--c-bh)"; e.currentTarget.style.background = "var(--c-sh)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--c-b)"; e.currentTarget.style.background = "var(--c-s)"; }}
+              >
+                <span style={{ color: "var(--c-p)" }}>{c.icon}</span>
+                {c.v}
+              </a>
+            ))}
+          </div>
         </div>
       </div>
 
       <footer
         style={{
-          marginTop: "80px",
+          marginTop: "84px",
           borderTop: "1px solid var(--c-b)",
           padding: "18px 0",
           display: "flex",
           justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: "8px",
           fontFamily: "JetBrains Mono, monospace",
           fontSize: "12px",
           color: "var(--c-dim)",
-          transition: "border-color 0.35s ease",
         }}
       >
         <span>© {new Date().getFullYear()} Guilherme Ferrarezi</span>
@@ -206,3 +280,12 @@ export function Contact() {
     </section>
   );
 }
+
+const fieldLabel: CSSProperties = { display: "flex", flexDirection: "column", gap: "7px" };
+const fieldCap: CSSProperties = {
+  fontFamily: "JetBrains Mono, monospace",
+  fontSize: "10.5px",
+  textTransform: "uppercase",
+  letterSpacing: ".1em",
+  color: "var(--c-mid)",
+};
