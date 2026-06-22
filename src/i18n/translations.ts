@@ -49,6 +49,34 @@ export const translations = {
       error: "algo deu errado — tenta de novo ou chama no WhatsApp.",
       footer_made: "feito com ♥ em Ribeirão Preto",
     },
+    projects: {
+      eyebrow: "Projetos",
+      title: "Coisas que",
+      title_em: "construí",
+      view: "ver projeto",
+      details: "clique para detalhes",
+      media: "Mídia do projeto",
+      repo: "repositório no GitHub",
+      no_shot: "Screenshot ainda não anexado.",
+      items: {
+        infra: {
+          tagline: "SSO + microserviços da Santos Tech",
+          description: "Núcleo da santos-tech.com: login único (JWT HS256 em cookies httpOnly) pra todos os subdomínios, e um monorepo de microserviços em Go — auth, payments, bot, agent e MCP — com painéis em React.",
+        },
+        unaerp: {
+          tagline: "Ecossistema de campeonato universitário",
+          description: "Plataforma do campeonato universitário Inter UnaERP, integrada à Santos Games Arena. API em Go (sqlc/Postgres) e web em React com GraphQL e Tailwind.",
+        },
+        webide: {
+          tagline: "IDE self-hosted no navegador",
+          description: "IDE estilo VS Code Online: clona seus repos do GitHub numa VPS e deixa editar e commitar pelo navegador — editor Monaco, terminal real (xterm/node-pty) e integração com a API do GitHub.",
+        },
+        home: {
+          tagline: "Landing da Santos Tech",
+          description: "Site institucional da santos-tech.com — React + Vite com TanStack Start (SSR) e Tailwind, deploy na Cloudflare.",
+        },
+      },
+    },
   },
   en: {
     hero: {
@@ -99,6 +127,34 @@ export const translations = {
       ok: "thanks! I'll reply soon.",
       error: "something went wrong — try again or hit me on WhatsApp.",
       footer_made: "made with ♥ in Ribeirão Preto",
+    },
+    projects: {
+      eyebrow: "Projects",
+      title: "Things I",
+      title_em: "built",
+      view: "view project",
+      details: "click for details",
+      media: "Project media",
+      repo: "GitHub repository",
+      no_shot: "Screenshot not attached yet.",
+      items: {
+        infra: {
+          tagline: "Santos Tech SSO + microservices",
+          description: "The core of santos-tech.com: single sign-on (JWT HS256 in httpOnly cookies) across all subdomains, and a Go microservices monorepo — auth, payments, bot, agent and MCP — with React dashboards.",
+        },
+        unaerp: {
+          tagline: "University championship ecosystem",
+          description: "Platform for the Inter UnaERP university championship, integrated with Santos Games Arena. Go API (sqlc/Postgres) and React web with GraphQL and Tailwind.",
+        },
+        webide: {
+          tagline: "Self-hosted IDE in the browser",
+          description: "VS Code Online–style IDE: clones your GitHub repos to a VPS and lets you edit and commit from the browser — Monaco editor, real terminal (xterm/node-pty) and GitHub API integration.",
+        },
+        home: {
+          tagline: "Santos Tech landing",
+          description: "Institutional site for santos-tech.com — React + Vite with TanStack Start (SSR) and Tailwind, deployed on Cloudflare.",
+        },
+      },
     },
   },
 } as const;

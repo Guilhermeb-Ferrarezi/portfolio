@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useT } from "@/i18n/I18nContext";
 
 import {
   Dialog,
@@ -72,10 +73,11 @@ const TAG_ICON: Record<string, string> = {
 
 type Screenshot = { label: string; src: string; alt: string };
 
+type ProjectId = "infra" | "unaerp" | "webide" | "home";
+
 type Project = {
+  id: ProjectId; // tagline + description vêm do i18n (t.projects.items[id])
   name: string;
-  tagline: string;
-  description: string;
   tags: string[];
   href?: string; // opcional — sem href, o modal abre sem botão de GitHub
   icon: LucideIcon;
@@ -88,10 +90,8 @@ type Project = {
 
 const projects: Project[] = [
   {
+    id: "infra",
     name: "Santos Tech Infra",
-    tagline: "SSO + microserviços da Santos Tech",
-    description:
-      "Núcleo da santos-tech.com: login único (JWT HS256 em cookies httpOnly) pra todos os subdomínios, e um monorepo de microserviços em Go — auth, payments, bot, agent e MCP — com painéis em React.",
     tags: ["Go", "React", "Bun", "PostgreSQL", "Docker"],
     href: "https://github.com/Guilhermeb-Ferrarezi/santos-tech-infra",
     icon: Server,
@@ -107,10 +107,8 @@ const projects: Project[] = [
     ],
   },
   {
+    id: "unaerp",
     name: "Inter UnaERP",
-    tagline: "Ecossistema de campeonato universitário",
-    description:
-      "Plataforma do campeonato universitário Inter UnaERP, integrada à Santos Games Arena. API em Go (sqlc/Postgres) e web em React com GraphQL e Tailwind.",
     tags: ["Go", "GraphQL", "React", "PostgreSQL", "Tailwind", "Docker"],
     href: "https://github.com/Guilhermeb-Ferrarezi/sga-inter-unaerp",
     icon: Trophy,
@@ -122,10 +120,8 @@ const projects: Project[] = [
     ],
   },
   {
+    id: "webide",
     name: "Web IDE",
-    tagline: "IDE self-hosted no navegador",
-    description:
-      "IDE estilo VS Code Online: clona seus repos do GitHub numa VPS e deixa editar e commitar pelo navegador — editor Monaco, terminal real (xterm/node-pty) e integração com a API do GitHub.",
     tags: ["TypeScript", "React", "Bun", "Vite", "Tailwind", "Docker"],
     href: "https://github.com/Guilhermeb-Ferrarezi/web-ide",
     icon: Code2,
@@ -137,10 +133,8 @@ const projects: Project[] = [
     ],
   },
   {
+    id: "home",
     name: "Santos Tech Home",
-    tagline: "Landing da Santos Tech",
-    description:
-      "Site institucional da santos-tech.com — React + Vite com TanStack Start (SSR) e Tailwind, deploy na Cloudflare.",
     tags: ["React", "TypeScript", "Tailwind", "Vite", "Cloudflare"],
     href: "https://github.com/Guilhermeb-Ferrarezi/Santos-Tech-Home-Page",
     icon: Globe,
@@ -236,6 +230,8 @@ function MediaCover({ project }: { project: Project }) {
 }
 
 function ProjectDialog({ project }: { project: Project }) {
+  const { t } = useT();
+  const item = t.projects.items[project.id];
   const Icon = project.icon;
   const [fullscreen, setFullscreen] = useState<Screenshot | null>(null);
   const shots = project.screenshots?.filter((s) => s.src) ?? [];
@@ -255,10 +251,10 @@ function ProjectDialog({ project }: { project: Project }) {
               <Icon className="w-7 h-7 text-primary-glow" strokeWidth={1.75} />
             </div>
             <div>
-              <p className="font-mono text-xs uppercase tracking-widest text-primary-glow/80 mb-3">{project.tagline}</p>
+              <p className="font-mono text-xs uppercase tracking-widest text-primary-glow/80 mb-3">{item.tagline}</p>
               <DialogTitle className="text-3xl md:text-5xl font-bold tracking-tight">{project.name}</DialogTitle>
               <DialogDescription className="mt-4 max-w-3xl text-base leading-relaxed text-muted-foreground">
-                {project.description}
+                {item.description}
               </DialogDescription>
             </div>
           </DialogHeader>
@@ -284,7 +280,7 @@ function ProjectDialog({ project }: { project: Project }) {
 
           <div className="grid gap-4">
             <div className="flex items-center justify-between gap-4">
-              <h4 className="text-xl font-bold">Mídia do projeto</h4>
+              <h4 className="text-xl font-bold">{t.projects.media}</h4>
               {project.href && (
                 <a
                   href={project.href}
@@ -293,7 +289,7 @@ function ProjectDialog({ project }: { project: Project }) {
                   className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary/60 px-4 py-2 text-sm font-mono text-foreground transition-colors hover:border-primary/60 hover:text-primary-glow"
                 >
                   <Github className="h-4 w-4" />
-                  repositório no GitHub
+                  {t.projects.repo}
                   <ArrowUpRight className="h-4 w-4" />
                 </a>
               )}
@@ -332,7 +328,7 @@ function ProjectDialog({ project }: { project: Project }) {
               </div>
             ) : !project.video?.src ? (
               <div className="rounded-2xl border border-dashed border-border bg-secondary/25 p-8 text-center text-sm text-muted-foreground">
-                Screenshot ainda não anexado.
+                {t.projects.no_shot}
               </div>
             ) : null}
           </div>
@@ -368,6 +364,8 @@ function ProjectDialog({ project }: { project: Project }) {
 
 // Faixa do zigzag — preview de um lado, texto/stack do outro (alterna por índice)
 function ZigRow({ project, flip }: { project: Project; flip: boolean }) {
+  const { t } = useT();
+  const item = t.projects.items[project.id];
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -422,7 +420,7 @@ function ZigRow({ project, flip }: { project: Project; flip: boolean }) {
                 margin: 0,
               }}
             >
-              {project.tagline}
+              {item.tagline}
             </p>
             <h3
               style={{
@@ -438,7 +436,7 @@ function ZigRow({ project, flip }: { project: Project; flip: boolean }) {
               {project.name}
             </h3>
             <p style={{ fontSize: "15px", color: "var(--c-muted)", lineHeight: 1.7, margin: 0, maxWidth: "46ch" }}>
-              {project.description}
+              {item.description}
             </p>
             <TagList tags={project.tags} />
             <span
@@ -458,7 +456,7 @@ function ZigRow({ project, flip }: { project: Project; flip: boolean }) {
                 fontWeight: 500,
               }}
             >
-              Ver projeto
+              {t.projects.view}
               <ArrowUpRight style={{ width: "15px", height: "15px" }} />
             </span>
           </div>
@@ -470,6 +468,7 @@ function ZigRow({ project, flip }: { project: Project; flip: boolean }) {
 }
 
 export function Projects() {
+  const { t } = useT();
   const sectionRef = useRef<HTMLElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
 
@@ -658,7 +657,7 @@ export function Projects() {
                 marginBottom: "10px",
               }}
             >
-              Projetos
+              {t.projects.eyebrow}
             </p>
             <h2
               style={{
@@ -670,7 +669,7 @@ export function Projects() {
                 color: "var(--c-fg)",
               }}
             >
-              Coisas que <em style={{ fontStyle: "italic", color: "var(--c-p)" }}>construí</em>.
+              {t.projects.title} <em style={{ fontStyle: "italic", color: "var(--c-p)" }}>{t.projects.title_em}</em>.
             </h2>
           </div>
           <a

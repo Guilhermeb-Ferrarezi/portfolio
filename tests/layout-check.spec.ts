@@ -58,6 +58,13 @@ test.describe("Desktop 1280", () => {
     await page.screenshot({ path: "tests/screenshots/new-pc-01-stack.png" });
   });
 
+  test("projetos EN", async ({ page }) => {
+    await page.getByRole("button", { name: "Trocar idioma" }).click();
+    await page.waitForTimeout(300);
+    await scrollToId(page, "projetos");
+    await page.screenshot({ path: "tests/screenshots/new-pc-02b-projetos-en.png" });
+  });
+
   test("transicao stack-projetos", async ({ page }) => {
     await scrollToId(page, "projetos");
     await page.evaluate(() => window.scrollBy({ top: -420, behavior: "instant" }));
