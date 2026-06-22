@@ -1,18 +1,38 @@
-const words = ["fullstack", "react", "typescript", "node.js", "postgres", "docker", "ai-driven", "linux", "open source"];
+const ITEMS = [
+  "React", "TypeScript", "Node.js", "PostgreSQL", "Docker",
+  "Linux", "Hyprland", "Neovim", "Bun", "Prisma", "JWT", "WebSocket",
+];
 
 export function Marquee() {
-  const items = [...words, ...words];
+  const doubled = [...ITEMS, ...ITEMS];
   return (
-    <div className="relative py-8 border-y border-border/50 bg-marquee-shift backdrop-blur-sm overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-hero opacity-10 animate-color-wash" />
-      <div className="flex animate-marquee whitespace-nowrap">
-        {items.map((w, i) => (
-          <span key={i} className="flex items-center text-4xl md:text-6xl font-bold font-display tracking-tighter mx-8">
-            <span className={i % 3 === 0 ? "text-gradient italic animate-text-shift" : "text-foreground/35 transition-colors duration-700 hover:text-primary-glow"}>
-              {w}
-            </span>
-            <span className="text-primary mx-8 animate-star-shift">✦</span>
-          </span>
+    <div
+      style={{
+        overflow: "hidden",
+        borderTop: "1px solid var(--c-b)",
+        borderBottom: "1px solid var(--c-b)",
+        transition: "border-color 0.35s ease",
+      }}
+    >
+      <div className="animate-marquee" style={{ display: "flex", width: "max-content" }}>
+        {doubled.map((w, i) => (
+          <div
+            key={i}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "24px",
+              padding: "13px 32px 13px 0",
+              fontFamily: "JetBrains Mono, monospace",
+              fontSize: "13px",
+              color: "var(--c-dim)",
+              whiteSpace: "nowrap",
+              transition: "color 0.35s ease",
+            }}
+          >
+            <strong style={{ color: "var(--c-mid)", fontWeight: 500 }}>{w}</strong>
+            <span style={{ color: "var(--c-p)", fontSize: "9px" }}>✦</span>
+          </div>
         ))}
       </div>
     </div>
