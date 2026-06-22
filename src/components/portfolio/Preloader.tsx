@@ -9,12 +9,40 @@ const L1 = "Guilherme";
 const L2 = "Ferrarezi";
 
 export function Preloader({ onComplete }: Props) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const topRef  = useRef<HTMLDivElement>(null);
   const botRef  = useRef<HTMLDivElement>(null);
   const seamRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
+
+    // Flow field de fundo (mesmo efeito do Hero, leve)
+    let raf = 0;
+    const cv = canvasRef.current;
+    if (cv) {
+      const c = cv.getContext("2d")!;
+      const W = (cv.width = window.innerWidth);
+      const H = (cv.height = window.innerHeight);
+      const N = window.innerWidth < 768 ? 120 : 200;
+      const ps = Array.from({ length: N }, () => ({ x: Math.random() * W, y: Math.random() * H }));
+      let tt = 0;
+      c.fillStyle = "#070707"; c.fillRect(0, 0, W, H);
+      const tick = () => {
+        raf = requestAnimationFrame(tick);
+        tt += 0.0024;
+        c.fillStyle = "rgba(7,7,7,0.09)"; c.fillRect(0, 0, W, H);
+        c.strokeStyle = "rgba(255,255,255,0.2)"; c.lineWidth = 1;
+        for (const p of ps) {
+          const a = Math.sin(p.x * 0.0024 + tt) * Math.cos(p.y * 0.0024 - tt) * Math.PI * 2;
+          const nx = p.x + Math.cos(a) * 2, ny = p.y + Math.sin(a) * 2;
+          c.beginPath(); c.moveTo(p.x, p.y); c.lineTo(nx, ny); c.stroke();
+          p.x = nx; p.y = ny;
+          if (p.x < 0 || p.x > W || p.y < 0 || p.y > H) { p.x = Math.random() * W; p.y = Math.random() * H; }
+        }
+      };
+      tick();
+    }
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
@@ -35,10 +63,11 @@ export function Preloader({ onComplete }: Props) {
       .to({}, { duration: 0.08 })
       .to(topRef.current, { yPercent: -100, duration: 0.9, ease: "power4.inOut" }, "<")
       .to(botRef.current, { yPercent: 100, duration: 0.9, ease: "power4.inOut" }, "<")
-      .to(".pre-name", { opacity: 0, duration: 0.25, ease: "power2.in" }, "<+0.05");
+      .to([".pre-name", canvasRef.current], { opacity: 0, duration: 0.3, ease: "power2.in" }, "<+0.05");
     });
 
     return () => {
+      cancelAnimationFrame(raf);
       ctx.revert();
       document.body.style.overflow = "";
     };
@@ -47,7 +76,7 @@ export function Preloader({ onComplete }: Props) {
   const charStyle = {
     display: "inline-block" as const,
     fontFamily: "Space Grotesk, sans-serif",
-    fontSize: "clamp(3.2rem, 2vw, 5rem)",
+    fontSize: "clamp(2rem, 2.8rem, 10rem)",
     fontWeight: 900,
     letterSpacing: "-.035em",
     lineHeight: 0.93,
@@ -76,6 +105,9 @@ export function Preloader({ onComplete }: Props) {
           background: "#070707",
         }}
       />
+
+      {/* Flow field de fundo */}
+      <canvas ref={canvasRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 1, pointerEvents: "none" }} />
 
       {/* Linha roxa na emenda */}
       <div

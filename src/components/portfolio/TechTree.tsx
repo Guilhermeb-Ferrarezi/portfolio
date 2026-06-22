@@ -80,6 +80,9 @@ const TIERS = [
   { id: "tools", label: { pt: "Ferramentas",     en: "Tools"          }, techs: ["git", "github", "figma", "playwright", "expo", "android", "claude"] },
 ];
 
+// Logos monocromáticos pretos — invertem pra branco no tema escuro
+const DARK_LOGOS = new Set(["github", "nextjs", "vercel"]);
+
 function TechPill({ id, locale }: { id: string; locale: "pt" | "en" }) {
   const tech = TECHS[id];
   const [hovered, setHovered] = useState(false);
@@ -110,6 +113,7 @@ function TechPill({ id, locale }: { id: string; locale: "pt" | "en" }) {
           <img
             src={tech.svg}
             alt={tech.name}
+            className={DARK_LOGOS.has(id) ? "logo-dark" : undefined}
             style={{ width: "18px", height: "18px", objectFit: "contain", flexShrink: 0 }}
           />
           <span

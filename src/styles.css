@@ -176,6 +176,7 @@
 @keyframes scroll-up       { from { transform: translateY(0); } to { transform: translateY(-50%); } }
 @keyframes scroll-down     { from { transform: translateY(-50%); } to { transform: translateY(0); } }
 @keyframes hero-cursor     { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes hero-shine      { to { background-position: -220% center; } }
 @keyframes hero-scroll-line {
   0%   { transform: scaleY(0); transform-origin: top; }
   50%  { transform: scaleY(1); transform-origin: top; }
@@ -188,6 +189,10 @@
 .tech-node {
   transition: border-color 0.18s, background 0.18s, transform 0.18s, box-shadow 0.18s;
 }
+
+/* Logos monocromáticos pretos (github, next, vercel): viram branco no tema escuro */
+.logo-dark { filter: invert(1); }
+.light .logo-dark { filter: none; }
 
 /* ── CONTATO (circuito) ─────────────────────────────────── */
 .contact-wrap { position: relative; padding-left: 52px; }
@@ -222,14 +227,20 @@
 
 /* ── RESPONSIVE ─────────────────────────────────────────── */
 @media (max-width: 768px) {
-  /* hero: sem canvas (pesado); nome vira texto leve e legível */
-  .hero-canvas { display: none !important; }
+  /* hero: mantém o flow (leve), esconde só o nome-partículas; nome vira texto com brilho */
+  .hero-canvas-name { display: none !important; }
   .hero-name-text {
     position: static; width: auto; height: auto; overflow: visible; clip: auto; clip-path: none;
     display: flex; flex-direction: column; gap: 2px;
     font-family: "Space Grotesk", sans-serif; font-weight: 900;
     font-size: clamp(2.6rem, 13.5vw, 4.2rem); line-height: 0.96; letter-spacing: -0.04em;
-    color: var(--c-fg); text-align: center; margin: 0;
+    text-align: center; margin: 0;
+    /* diferencial: brilho roxo varrendo o nome */
+    background: linear-gradient(100deg, var(--c-fg) 35%, var(--c-p) 50%, var(--c-fg) 65%);
+    background-size: 220% auto;
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+    animation: hero-shine 5s linear infinite;
   }
   .hero-name-text span { white-space: nowrap; }
   /* linha lateral: esconde no mobile */

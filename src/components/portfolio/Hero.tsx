@@ -119,7 +119,7 @@ export function Hero() {
     let dot = 3;
     let lastW = 0, lastH = 0;
     let tt = 0;
-    const FLOW_N = reduced ? 0 : 200;
+    const FLOW_N = reduced ? 0 : isMobile ? 130 : 200;
 
     function buildName() {
       const off = document.createElement("canvas");
@@ -140,9 +140,9 @@ export function Hero() {
       o.fillText(NAME[0], W / 2, H / 2 - fs * 0.5);
       o.fillText(NAME[1], W / 2, H / 2 + fs * 0.52);
       const d = o.getImageData(0, 0, W, H).data;
-      // densidade proporcional ao tamanho (mais pontos por letra = legível)
-      const gap = Math.max(3, Math.round(fs / 26));
-      dot = gap >= 5 ? 3 : 2;
+      // bolinhas mais espaçadas (visual pontilhado mais simples/limpo)
+      const gap = Math.max(5, Math.round(fs / 18));
+      dot = gap >= 7 ? 3 : 2;
       const targets: [number, number][] = [];
       for (let y = 0; y < H; y += gap) for (let x = 0; x < W; x += gap) {
         if (d[(y * W + x) * 4 + 3] > 128) targets.push([x, y]);
@@ -152,21 +152,19 @@ export function Hero() {
 
     function resize() {
       const newW = window.innerWidth, newH = window.innerHeight;
-      // no mobile a barra de URL muda só a altura ao rolar — ignora (senão o nome "se desfaz")
-      if (newW === lastW && Math.abs(newH - lastH) < 140 && nameParts.length) return;
+      // no mobile a barra de URL muda só a altura ao rolar — ignora (não reseta o canvas)
+      if (newW === lastW && Math.abs(newH - lastH) < 140 && lastW !== 0) return;
       lastW = newW; lastH = newH;
       W = flow!.width = nameCv!.width = newW;
       H = flow!.height = nameCv!.height = newH;
       fctx.clearRect(0, 0, W, H);
       flowPts = Array.from({ length: FLOW_N }, () => ({ x: Math.random() * W, y: Math.random() * H }));
-      buildName();
+      if (!isMobile) buildName(); // no mobile o nome é texto (CSS); o canvas só desenha o flow
     }
-    // No mobile o canvas é pesado/instável — usa o nome em texto (CSS); canvas só no desktop
-    if (!isMobile) {
-      resize();
-      window.addEventListener("resize", resize);
-      document.fonts.ready.then(() => buildName());
-    }
+    // O flow (traços) roda em todo lugar (leve); o nome em partículas é só no desktop
+    resize();
+    window.addEventListener("resize", resize);
+    if (!isMobile) document.fonts.ready.then(() => buildName());
 
     const mouse = { x: -999, y: -999 };
     const onMove = (e: MouseEvent) => { mouse.x = e.clientX; mouse.y = e.clientY; };
@@ -222,11 +220,9 @@ export function Hero() {
       if (inView && !document.hidden) start(); else stop();
     }, { threshold: 0 });
     const onVis = () => { if (document.hidden) stop(); else if (inView) start(); };
-    if (!isMobile) {
-      io.observe(flow);
-      document.addEventListener("visibilitychange", onVis);
-      start();
-    }
+    io.observe(flow);
+    document.addEventListener("visibilitychange", onVis);
+    start();
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
@@ -290,10 +286,10 @@ export function Hero() {
       ref={sectionRef}
       style={{ position: "relative", height: "100vh", minHeight: "600px", overflow: "hidden", background: "var(--c-bg)" }}
     >
-      {/* Flow field (traços) — só no desktop */}
-      <canvas ref={flowRef} className="hero-canvas" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 0 }} />
-      {/* Nome em partículas — só no desktop */}
-      <canvas ref={nameRef} className="hero-canvas" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 1 }} />
+      {/* Flow field (traços) — roda em desktop e mobile (leve) */}
+      <canvas ref={flowRef} className="hero-canvas-flow" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 0 }} />
+      {/* Nome em partículas — só no desktop (no mobile vira texto) */}
+      <canvas ref={nameRef} className="hero-canvas-name" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 1 }} />
 
       {/* Gradiente de profundidade */}
       <div
