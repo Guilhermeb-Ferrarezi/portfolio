@@ -69,6 +69,10 @@ class TextScramble {
       this.frame++;
     }
   }
+
+  stop() {
+    cancelAnimationFrame(this.raf);
+  }
 }
 
 const NAME = ["Guilherme", "Ferrarezi"];
@@ -205,22 +209,8 @@ export function Hero() {
     document.addEventListener("visibilitychange", onVis);
     start();
 
-    // Badge cycling
-    const startCycle = () => {
-      const el = cycleRef.current;
-      if (!el) return;
-      const phrases = t.hero.phrases;
-      const fx = new TextScramble(el);
-      let idx = 0;
-      const next = () => {
-        idx = (idx + 1) % phrases.length;
-        fx.setText(phrases[idx]).then(() => setTimeout(next, 2600));
-      };
-      setTimeout(next, 2600);
-    };
-
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: "power4.out" }, onComplete: startCycle });
+      const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
       tl.to("#hero-badge", { opacity: 1, y: 0, duration: 0.6 }, 0.2)
         .to("#hero-sub", { opacity: 1, y: 0, duration: 0.7 }, 0.9)
         .to("#hero-act", { opacity: 1, y: 0, duration: 0.6 }, 1.1)
@@ -253,6 +243,26 @@ export function Hero() {
       window.removeEventListener("resize", resize);
       ctx.revert();
     };
+  }, []);
+
+  // Ciclo do badge (frases traduzidas) — efeito próprio: troca de idioma NÃO
+  // recria o canvas, então o nome em partículas não "esfarela".
+  useEffect(() => {
+    const el = cycleRef.current;
+    if (!el) return;
+    const phrases = t.hero.phrases;
+    const fx = new TextScramble(el);
+    let idx = 0;
+    let timer = 0;
+    let cancelled = false;
+    const next = () => {
+      if (cancelled) return;
+      idx = (idx + 1) % phrases.length;
+      fx.setText(phrases[idx]).then(() => { if (!cancelled) timer = window.setTimeout(next, 2600); });
+    };
+    el.textContent = phrases[0];
+    timer = window.setTimeout(next, 2600);
+    return () => { cancelled = true; clearTimeout(timer); fx.stop(); };
   }, [t]);
 
   return (

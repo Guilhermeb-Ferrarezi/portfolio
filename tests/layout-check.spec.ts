@@ -31,6 +31,14 @@ test.describe("Desktop 1280", () => {
     await page.screenshot({ path: "tests/screenshots/new-pc-00-hero.png" });
   });
 
+  test("hero troca idioma", async ({ page }) => {
+    await page.mouse.move(900, 320);
+    await page.waitForTimeout(3000);
+    await page.getByRole("button", { name: "Trocar idioma" }).click();
+    await page.waitForTimeout(350);
+    await page.screenshot({ path: "tests/screenshots/new-pc-00-hero-i18n.png" });
+  });
+
   test("hero light", async ({ page }) => {
     await page.getByRole("button", { name: /Modo claro/i }).click();
     await page.mouse.move(900, 320);
