@@ -49,7 +49,8 @@ import homeDepoimentos from "@/assets/projetos/home-depoimentos.png";
 import homeComoFunciona from "@/assets/projetos/home-como-funciona.png";
 import unaerpHome from "@/assets/projetos/unaerp-home.png";
 import unaerpProgresso from "@/assets/projetos/unaerp-progresso.png";
-import webideLogin from "@/assets/projetos/webide-login.png";
+import webideEditor from "@/assets/projetos/webide-editor.png";
+import webideRepos from "@/assets/projetos/webide-repos.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -129,9 +130,10 @@ const projects: Project[] = [
     href: "https://github.com/Guilhermeb-Ferrarezi/web-ide",
     icon: Code2,
     emoji: "💻",
-    cover: webideLogin,
+    cover: webideEditor,
     screenshots: [
-      { label: "Entrada via GitHub", src: webideLogin, alt: "Web IDE — login com GitHub" },
+      { label: "Editor (Monaco)", src: webideEditor, alt: "Web IDE — editor de código com Monaco" },
+      { label: "Seus repositórios", src: webideRepos, alt: "Web IDE — lista de repositórios do GitHub" },
     ],
   },
   {
