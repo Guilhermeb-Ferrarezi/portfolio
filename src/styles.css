@@ -214,8 +214,24 @@
 .contact-input:focus { border-color: var(--c-ps); background: var(--c-sh); }
 .contact-input::placeholder { color: var(--c-mid); }
 
+/* Hero: nome em texto — sr-only no desktop (canvas mostra), título no mobile */
+.hero-name-text {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; margin: 0;
+}
+
 /* ── RESPONSIVE ─────────────────────────────────────────── */
 @media (max-width: 768px) {
+  /* hero: sem canvas (pesado); nome vira texto leve e legível */
+  .hero-canvas { display: none !important; }
+  .hero-name-text {
+    position: static; width: auto; height: auto; overflow: visible; clip: auto; clip-path: none;
+    display: flex; flex-direction: column; gap: 2px;
+    font-family: "Space Grotesk", sans-serif; font-weight: 900;
+    font-size: clamp(2.6rem, 13.5vw, 4.2rem); line-height: 0.96; letter-spacing: -0.04em;
+    color: var(--c-fg); text-align: center; margin: 0;
+  }
+  .hero-name-text span { white-space: nowrap; }
   /* linha lateral: esconde no mobile */
   .side-line { display: none !important; }
 

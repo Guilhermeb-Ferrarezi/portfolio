@@ -102,6 +102,7 @@ export function Hero() {
     const fctx = flow.getContext("2d")!;
     const nctx = nameCv.getContext("2d")!;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
     // Traços/partículas em branco no dark, preto no light (segue o texto do tema)
     let ink: [number, number, number] = hexToRgb(readVar("--c-fg", "#f0f0f0"));
@@ -160,10 +161,12 @@ export function Hero() {
       flowPts = Array.from({ length: FLOW_N }, () => ({ x: Math.random() * W, y: Math.random() * H }));
       buildName();
     }
-    resize();
-    window.addEventListener("resize", resize);
-    // reconstrói o nome quando a fonte carrega (senão usa fallback)
-    document.fonts.ready.then(() => buildName());
+    // No mobile o canvas é pesado/instável — usa o nome em texto (CSS); canvas só no desktop
+    if (!isMobile) {
+      resize();
+      window.addEventListener("resize", resize);
+      document.fonts.ready.then(() => buildName());
+    }
 
     const mouse = { x: -999, y: -999 };
     const onMove = (e: MouseEvent) => { mouse.x = e.clientX; mouse.y = e.clientY; };
@@ -218,11 +221,12 @@ export function Hero() {
       inView = e.isIntersecting;
       if (inView && !document.hidden) start(); else stop();
     }, { threshold: 0 });
-    io.observe(flow);
-
     const onVis = () => { if (document.hidden) stop(); else if (inView) start(); };
-    document.addEventListener("visibilitychange", onVis);
-    start();
+    if (!isMobile) {
+      io.observe(flow);
+      document.addEventListener("visibilitychange", onVis);
+      start();
+    }
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
@@ -286,10 +290,10 @@ export function Hero() {
       ref={sectionRef}
       style={{ position: "relative", height: "100vh", minHeight: "600px", overflow: "hidden", background: "var(--c-bg)" }}
     >
-      {/* Flow field (traços) */}
-      <canvas ref={flowRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 0 }} />
-      {/* Nome em partículas */}
-      <canvas ref={nameRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 1 }} />
+      {/* Flow field (traços) — só no desktop */}
+      <canvas ref={flowRef} className="hero-canvas" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 0 }} />
+      {/* Nome em partículas — só no desktop */}
+      <canvas ref={nameRef} className="hero-canvas" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 1 }} />
 
       {/* Gradiente de profundidade */}
       <div
@@ -344,6 +348,12 @@ export function Hero() {
             style={{ display: "inline-block", width: "2px", height: "1em", background: "var(--c-p)", animation: "hero-cursor 1.1s step-end infinite", verticalAlign: "middle", flexShrink: 0 }}
           />
         </div>
+
+        {/* Nome em texto — escondido no desktop (canvas), visível e leve no mobile */}
+        <h1 className="hero-name-text" aria-label="Guilherme Ferrarezi">
+          <span>Guilherme</span>
+          <span>Ferrarezi</span>
+        </h1>
 
         {/* Sub + CTAs */}
         <div>
