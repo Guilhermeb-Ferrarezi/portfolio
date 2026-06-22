@@ -71,7 +71,7 @@ class TextScramble {
   }
 }
 
-const NAME = ["Guilherme", "Ferrarezi."];
+const NAME = ["Guilherme", "Ferrarezi"];
 
 function readVar(name: string, fallback: string) {
   const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -99,11 +99,11 @@ export function Hero() {
     const nctx = nameCv.getContext("2d")!;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // Cores conforme o tema (accent = branco no dark / preto no light)
-    let ink: [number, number, number] = hexToRgb(readVar("--c-p", "#ffffff"));
+    // Traços/partículas em branco no dark, preto no light (segue o texto do tema)
+    let ink: [number, number, number] = hexToRgb(readVar("--c-fg", "#f0f0f0"));
     let bg: [number, number, number] = hexToRgb(readVar("--c-bg", "#070707"));
     const themeObs = new MutationObserver(() => {
-      ink = hexToRgb(readVar("--c-p", "#ffffff"));
+      ink = hexToRgb(readVar("--c-fg", "#f0f0f0"));
       bg = hexToRgb(readVar("--c-bg", "#070707"));
     });
     themeObs.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
@@ -126,7 +126,7 @@ export function Hero() {
       o.fillText(NAME[0], W / 2, H / 2 - fs * 0.5);
       o.fillText(NAME[1], W / 2, H / 2 + fs * 0.52);
       const d = o.getImageData(0, 0, W, H).data;
-      const gap = Math.max(6, Math.round(fs / 21));
+      const gap = Math.max(6, Math.round(fs / 23));
       const targets: [number, number][] = [];
       for (let y = 0; y < H; y += gap) for (let x = 0; x < W; x += gap) {
         if (d[(y * W + x) * 4 + 3] > 128) targets.push([x, y]);
@@ -188,7 +188,7 @@ export function Hero() {
         p.y += (p.ty - p.y) * 0.09;
         const dx = p.x - mouse.x, dy = p.y - mouse.y, md = Math.hypot(dx, dy);
         if (md < 80) { p.x += (dx / md) * 4; p.y += (dy / md) * 4; }
-        nctx.fillRect(p.x, p.y, 2, 2);
+        nctx.fillRect(p.x, p.y, 3, 3);
       }
     };
 

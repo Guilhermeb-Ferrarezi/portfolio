@@ -17,9 +17,9 @@ export const translations = {
       heading_1: "Fullstack",
       heading_2: "developer.",
       bio_1:
-        "Sou desenvolvedor fullstack de Ribeirão Preto. Construo aplicações completas, do design de interface até a infraestrutura — com foco em performance, clareza e código que dura.",
+        "Sou Guilherme Ferrarezi, desenvolvedor fullstack de Ribeirão Preto. Construo ecossistemas completos — do design de interface à infraestrutura — com backend em Go, front em React e foco em performance e código que dura.",
       bio_2:
-        "Trabalho com clientes que precisam de mais do que um site bonito: sistemas reais, integrações, automações e experiências que convertem.",
+        "Sou o dev por trás da Santos Tech: SSO entre subdomínios, pagamentos via PIX, e-mail, dashboards e plataformas integradas. Sistemas reais rodando em produção — não só sites bonitos.",
       stat_1_label: "projetos entregues",
       stat_1_value: "30+",
       stat_2_label: "anos no mercado",
@@ -68,9 +68,9 @@ export const translations = {
       heading_1: "Fullstack",
       heading_2: "Developer",
       bio_1:
-        "I'm a fullstack developer from Ribeirão Preto, Brazil. I build complete applications — from interface design to infrastructure — focused on performance, clarity and code that lasts.",
+        "I'm Guilherme Ferrarezi, a fullstack developer from Ribeirão Preto, Brazil. I build complete ecosystems — from interface design to infrastructure — with Go on the backend, React on the front, focused on performance and code that lasts.",
       bio_2:
-        "I work with clients who need more than a pretty website: real systems, integrations, automations and experiences that convert.",
+        "I'm the developer behind Santos Tech: cross-subdomain SSO, PIX payments, email, dashboards and integrated platforms. Real systems running in production — not just pretty websites.",
       stat_1_label: "projects delivered",
       stat_1_value: "30+",
       stat_2_label: "years in the market",

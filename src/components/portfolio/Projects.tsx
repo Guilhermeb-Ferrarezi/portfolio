@@ -178,7 +178,7 @@ function TagList({ tags }: { tags: string[] }) {
             }}
           >
             {icon && (
-              <img src={icon} alt="" aria-hidden="true" style={{ width: "14px", height: "14px", objectFit: "contain", filter: "grayscale(1)" }} />
+              <img src={icon} alt="" aria-hidden="true" style={{ width: "14px", height: "14px", objectFit: "contain" }} />
             )}
             {t}
           </span>

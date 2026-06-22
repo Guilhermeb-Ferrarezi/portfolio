@@ -110,7 +110,7 @@ function TechPill({ id, locale }: { id: string; locale: "pt" | "en" }) {
           <img
             src={tech.svg}
             alt={tech.name}
-            style={{ width: "18px", height: "18px", objectFit: "contain", flexShrink: 0, filter: "grayscale(1)" }}
+            style={{ width: "18px", height: "18px", objectFit: "contain", flexShrink: 0 }}
           />
           <span
             style={{

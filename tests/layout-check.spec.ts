@@ -31,6 +31,13 @@ test.describe("Desktop 1280", () => {
     await page.screenshot({ path: "tests/screenshots/new-pc-00-hero.png" });
   });
 
+  test("hero light", async ({ page }) => {
+    await page.getByRole("button", { name: /Modo claro/i }).click();
+    await page.mouse.move(900, 320);
+    await page.waitForTimeout(3000);
+    await page.screenshot({ path: "tests/screenshots/new-pc-00-hero-light.png" });
+  });
+
   test("about", async ({ page }) => {
     await scrollToId(page, "about");
     await page.evaluate(() => window.scrollBy({ top: 500, behavior: "instant" }));
