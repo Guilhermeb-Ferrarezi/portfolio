@@ -47,6 +47,9 @@ import homeFeatures from "@/assets/projetos/home-features.png";
 import homeProgramas from "@/assets/projetos/home-programas.png";
 import homeDepoimentos from "@/assets/projetos/home-depoimentos.png";
 import homeComoFunciona from "@/assets/projetos/home-como-funciona.png";
+import unaerpHome from "@/assets/projetos/unaerp-home.png";
+import unaerpProgresso from "@/assets/projetos/unaerp-progresso.png";
+import webideLogin from "@/assets/projetos/webide-login.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -111,6 +114,11 @@ const projects: Project[] = [
     href: "https://github.com/Guilhermeb-Ferrarezi/sga-inter-unaerp",
     icon: Trophy,
     emoji: "🏆",
+    cover: unaerpHome,
+    screenshots: [
+      { label: "Home do campeonato", src: unaerpHome, alt: "Inter UnaERP — home do campeonato" },
+      { label: "Progresso do torneio", src: unaerpProgresso, alt: "Inter UnaERP — progresso do torneio e classificação" },
+    ],
   },
   {
     name: "Web IDE",
@@ -121,6 +129,10 @@ const projects: Project[] = [
     href: "https://github.com/Guilhermeb-Ferrarezi/web-ide",
     icon: Code2,
     emoji: "💻",
+    cover: webideLogin,
+    screenshots: [
+      { label: "Entrada via GitHub", src: webideLogin, alt: "Web IDE — login com GitHub" },
+    ],
   },
   {
     name: "Santos Tech Home",
