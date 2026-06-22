@@ -45,9 +45,9 @@
   --card-foreground: #f0f0f0;
   --popover: #111;
   --popover-foreground: #f0f0f0;
-  --primary: #8b5cf6;
-  --primary-foreground: #fff;
-  --primary-glow: #c4b5fd;
+  --primary: #ffffff;
+  --primary-foreground: #070707;
+  --primary-glow: #f0f0f0;
   --secondary: rgba(255,255,255,0.06);
   --secondary-foreground: #f0f0f0;
   --muted: rgba(255,255,255,0.04);
@@ -58,14 +58,14 @@
   --destructive-foreground: #fff;
   --border: rgba(255,255,255,0.07);
   --input: rgba(255,255,255,0.08);
-  --ring: #8b5cf6;
+  --ring: #ffffff;
 
   /* Gradient / shadow tokens */
-  --gradient-text: linear-gradient(135deg, #c4b5fd, #8b5cf6 50%, #a78bfa);
+  --gradient-text: linear-gradient(135deg, #ffffff, #cfcfcf 50%, #ffffff);
   --gradient-card: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
   --shadow-card: 0 20px 50px -20px rgba(0,0,0,0.8);
-  --shadow-glow: 0 0 60px rgba(139,92,246,0.25);
-  --shadow-neon: 0 0 30px rgba(139,92,246,0.4);
+  --shadow-glow: 0 0 60px rgba(255,255,255,0.10);
+  --shadow-neon: 0 0 30px rgba(255,255,255,0.15);
 
   /* Custom design-system tokens used in inline styles */
   --c-bg: #070707;
@@ -78,10 +78,11 @@
   --c-b: rgba(255,255,255,0.07);
   --c-bh: rgba(255,255,255,0.18);
   --c-ov: rgba(7,7,7,0.84);
-  --c-p: #8b5cf6;
-  --c-pd: rgba(139,92,246,0.12);
-  --c-pb: rgba(139,92,246,0.2);
-  --c-ps: rgba(139,92,246,0.35);
+  --c-p: #ffffff;
+  --c-pd: rgba(255,255,255,0.12);
+  --c-pb: rgba(255,255,255,0.2);
+  --c-ps: rgba(255,255,255,0.4);
+  --c-onp: #070707; /* texto/ícone sobre o accent */
 }
 
 /* ── LIGHT ──────────────────────────────────────────────── */
@@ -93,9 +94,9 @@
   --card-foreground: #0d0d0d;
   --popover: #fff;
   --popover-foreground: #0d0d0d;
-  --primary: #7c3aed;
+  --primary: #0d0d0d;
   --primary-foreground: #fff;
-  --primary-glow: #7c3aed;
+  --primary-glow: #0d0d0d;
   --secondary: rgba(0,0,0,0.05);
   --secondary-foreground: #0d0d0d;
   --muted: rgba(0,0,0,0.04);
@@ -104,14 +105,14 @@
   --accent-foreground: #0d0d0d;
   --border: rgba(0,0,0,0.09);
   --input: rgba(0,0,0,0.08);
-  --ring: #7c3aed;
+  --ring: #0d0d0d;
 
   /* Gradient / shadow tokens */
-  --gradient-text: linear-gradient(135deg, #7c3aed, #5b21b6 50%, #7c3aed);
+  --gradient-text: linear-gradient(135deg, #0d0d0d, #444444 50%, #0d0d0d);
   --gradient-card: linear-gradient(145deg, rgba(0,0,0,0.04), rgba(0,0,0,0.02));
   --shadow-card: 0 20px 50px -20px rgba(0,0,0,0.18);
-  --shadow-glow: 0 0 60px rgba(124,58,237,0.15);
-  --shadow-neon: 0 0 30px rgba(124,58,237,0.2);
+  --shadow-glow: 0 0 60px rgba(0,0,0,0.12);
+  --shadow-neon: 0 0 30px rgba(0,0,0,0.15);
 
   /* Custom tokens */
   --c-bg: #f7f7f7;
@@ -124,10 +125,11 @@
   --c-b: rgba(0,0,0,0.09);
   --c-bh: rgba(0,0,0,0.22);
   --c-ov: rgba(247,247,247,0.92);
-  --c-p: #7c3aed;
-  --c-pd: rgba(124,58,237,0.1);
-  --c-pb: rgba(124,58,237,0.2);
-  --c-ps: rgba(124,58,237,0.3);
+  --c-p: #0d0d0d;
+  --c-pd: rgba(0,0,0,0.1);
+  --c-pb: rgba(0,0,0,0.2);
+  --c-ps: rgba(0,0,0,0.35);
+  --c-onp: #ffffff; /* texto/ícone sobre o accent */
 }
 
 @layer base {

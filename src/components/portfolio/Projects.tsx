@@ -178,7 +178,7 @@ function TagList({ tags }: { tags: string[] }) {
             }}
           >
             {icon && (
-              <img src={icon} alt="" aria-hidden="true" style={{ width: "14px", height: "14px", objectFit: "contain" }} />
+              <img src={icon} alt="" aria-hidden="true" style={{ width: "14px", height: "14px", objectFit: "contain", filter: "grayscale(1)" }} />
             )}
             {t}
           </span>
@@ -205,7 +205,7 @@ function MediaCover({ project }: { project: Project }) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "linear-gradient(135deg, rgba(139,92,246,0.18), rgba(139,92,246,0.03)), #0c0a12",
+        background: "linear-gradient(135deg, var(--c-pb), var(--c-s)), #0c0a12",
       }}
     >
       <div
@@ -214,7 +214,7 @@ function MediaCover({ project }: { project: Project }) {
           inset: 0,
           opacity: 0.5,
           backgroundImage:
-            "linear-gradient(rgba(139,92,246,0.10) 1px, transparent 1px), linear-gradient(90deg, rgba(139,92,246,0.10) 1px, transparent 1px)",
+            "linear-gradient(var(--c-pd) 1px, transparent 1px), linear-gradient(90deg, var(--c-pd) 1px, transparent 1px)",
           backgroundSize: "26px 26px",
         }}
       />

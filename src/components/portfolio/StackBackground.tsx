@@ -30,7 +30,7 @@ export function StackBackground() {
           fpsLimit: 60,
           particles: {
             number: { value: 45, density: { enable: true } },
-            color: { value: ["#8b5cf6", "#a78bfa", "#7c3aed", "#c4b5fd"] },
+            color: { value: ["var(--c-p)", "var(--c-p)", "var(--c-p)", "var(--c-p)"] },
             shape: {
               type: "text",
               options: {

@@ -169,7 +169,7 @@ export function About() {
           }}
         >
           <path ref={spineRef} className="about-spine" stroke="var(--c-p)" strokeWidth="1.5" fill="none" opacity="0.5" strokeLinecap="round" />
-          <path ref={conn3Ref} stroke="#8b5cf6" strokeWidth="1" fill="none" opacity="0.55" />
+          <path ref={conn3Ref} stroke="var(--c-p)" strokeWidth="1" fill="none" opacity="0.55" />
         </svg>
 
         {/* Glow ambiente — radial suave ancorado no canto do conteúdo */}
@@ -184,7 +184,7 @@ export function About() {
             height: "420px",
             transform: "translateY(-50%)",
             background:
-              "radial-gradient(ellipse at center, rgba(139,92,246,0.16), transparent 70%)",
+              "radial-gradient(ellipse at center, var(--c-pd), transparent 70%)",
             pointerEvents: "none",
             zIndex: 0,
           }}

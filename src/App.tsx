@@ -145,7 +145,7 @@ function AppInner() {
       <TechTree />
       <Projects />
       <Contact />
-      <Snowfall color="purple" snowflakeCount={120}/>
+      <Snowfall color="#9a9a9a" snowflakeCount={120}/>
     </div>
   );
 }

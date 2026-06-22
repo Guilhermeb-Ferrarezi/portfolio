@@ -6,7 +6,7 @@ interface Props {
 }
 
 const L1 = "Guilherme";
-const L2 = "Ferrarezi.";
+const L2 = "Ferrarezi";
 
 export function Preloader({ onComplete }: Props) {
   const topRef  = useRef<HTMLDivElement>(null);
@@ -85,8 +85,8 @@ export function Preloader({ onComplete }: Props) {
           top: "50%",
           left: 0, right: 0,
           height: "1px",
-          background: "linear-gradient(to right, transparent 0%, #7c3aed 25%, #c4b5fd 50%, #7c3aed 75%, transparent 100%)",
-          boxShadow: "0 0 24px rgba(139,92,246,0.9), 0 0 60px rgba(139,92,246,0.4)",
+          background: "linear-gradient(to right, transparent 0%, var(--c-p) 25%, var(--c-p) 50%, var(--c-p) 75%, transparent 100%)",
+          boxShadow: "0 0 24px var(--c-p), 0 0 60px var(--c-ps)",
           opacity: 0,
           zIndex: 1001,
           pointerEvents: "none",
@@ -118,7 +118,7 @@ export function Preloader({ onComplete }: Props) {
         {/* Linha 2 — roxo */}
         <div style={{ overflow: "hidden" }}>
           {L2.split("").map((ch, i) => (
-            <span key={i} className="pre-char" style={{ ...charStyle, color: "#8b5cf6" }}>
+            <span key={i} className="pre-char" style={{ ...charStyle, color: "var(--c-p)" }}>
               {ch}
             </span>
           ))}

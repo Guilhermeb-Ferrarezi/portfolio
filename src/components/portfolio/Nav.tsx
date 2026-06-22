@@ -69,7 +69,7 @@ export function Nav() {
             left: 0,
             height: "1.5px",
             width: `${progress}%`,
-            background: "linear-gradient(to right, #7c3aed, #c4b5fd)",
+            background: "linear-gradient(to right, var(--c-p), var(--c-p))",
             transition: "width 0.1s linear",
           }}
         />

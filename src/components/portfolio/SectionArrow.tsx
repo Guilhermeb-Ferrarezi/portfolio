@@ -59,7 +59,7 @@ export function SectionArrow({ to, spineAlign }: Props) {
         <path
           ref={pathRef}
           d={`M 1 0 L 1 ${LINE_H}`}
-          stroke="#8b5cf6"
+          stroke="var(--c-p)"
           strokeWidth="1"
           strokeLinecap="round"
           opacity="0.6"

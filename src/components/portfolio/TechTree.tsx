@@ -97,20 +97,20 @@ function TechPill({ id, locale }: { id: string; locale: "pt" | "en" }) {
             gap: "8px",
             padding: "7px 14px 7px 10px",
             borderRadius: "8px",
-            border: `1px solid ${hovered ? "rgba(139,92,246,0.45)" : "var(--c-b)"}`,
-            background: hovered ? "rgba(139,92,246,0.07)" : "var(--c-s)",
+            border: `1px solid ${hovered ? "var(--c-ps)" : "var(--c-b)"}`,
+            background: hovered ? "var(--c-b)" : "var(--c-s)",
             cursor: "default",
             userSelect: "none",
             flexShrink: 0,
             transform: hovered ? "translateY(-1px)" : "translateY(0)",
-            boxShadow: hovered ? "0 4px 14px rgba(139,92,246,0.12)" : "none",
+            boxShadow: hovered ? "0 4px 14px var(--c-pd)" : "none",
             transition: "border-color .15s, background .15s, transform .15s, box-shadow .15s",
           }}
         >
           <img
             src={tech.svg}
             alt={tech.name}
-            style={{ width: "18px", height: "18px", objectFit: "contain", flexShrink: 0 }}
+            style={{ width: "18px", height: "18px", objectFit: "contain", flexShrink: 0, filter: "grayscale(1)" }}
           />
           <span
             style={{

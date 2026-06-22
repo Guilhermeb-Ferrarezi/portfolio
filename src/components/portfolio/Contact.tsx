@@ -1,14 +1,11 @@
 import { useEffect, useRef, useState, type FormEvent, type CSSProperties } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useT } from "@/i18n/I18nContext";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const ACCESS_KEY = import.meta.env.WEB3FORMS
-
-const TITLE: { t: string; p?: boolean; i?: boolean }[] = [
-  { t: "Entre" }, { t: "em" }, { t: "contato", p: true },
-];
+const ACCESS_KEY = import.meta.env.VITE_WEB3FORMS as string;
 
 const ICON = {
   whatsapp: (
@@ -45,6 +42,7 @@ const channels = [
 type Status = "idle" | "sending" | "ok" | "error";
 
 export function Contact() {
+  const { t } = useT();
   const sectionRef = useRef<HTMLElement>(null);
   const [status, setStatus] = useState<Status>("idle");
 
@@ -150,7 +148,7 @@ export function Contact() {
               marginBottom: "16px",
             }}
           >
-            // contato
+            {t.contact.eyebrow}
           </p>
           <h2
             style={{
@@ -163,22 +161,10 @@ export function Contact() {
               margin: 0,
             }}
           >
-            {TITLE.map((w, i) => (
-              <span
-                key={i}
-                style={{
-                  display: "inline-block",
-                  marginRight: "0.25em",
-                  color: w.p ? "var(--c-p)" : "var(--c-fg)",
-                  fontStyle: w.i ? "italic" : "normal",
-                }}
-              >
-                {w.t}
-              </span>
-            ))}
+            {t.contact.title}
           </h2>
           <p style={{ fontSize: "15px", color: "var(--c-muted)", lineHeight: 1.7, maxWidth: "46ch", marginTop: "18px" }}>
-            Disponível pra novos projetos, parcerias e oportunidades. Manda uma mensagem — respondo rapidinho.
+            {t.contact.sub}
           </p>
         </div>
 
@@ -187,17 +173,17 @@ export function Contact() {
           <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
             <div className="contact-form-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
               <label style={fieldLabel}>
-                <span style={fieldCap}>nome</span>
-                <input className="contact-input" name="name" type="text" required placeholder="Seu nome" />
+                <span style={fieldCap}>{t.contact.f_name}</span>
+                <input className="contact-input" name="name" type="text" required placeholder={t.contact.ph_name} />
               </label>
               <label style={fieldLabel}>
-                <span style={fieldCap}>e-mail</span>
-                <input className="contact-input" name="email" type="email" required placeholder="voce@email.com" />
+                <span style={fieldCap}>{t.contact.f_email}</span>
+                <input className="contact-input" name="email" type="email" required placeholder={t.contact.ph_email} />
               </label>
             </div>
             <label style={fieldLabel}>
-              <span style={fieldCap}>mensagem</span>
-              <textarea className="contact-input" name="message" required rows={4} placeholder="Conta um pouco da sua ideia..." style={{ resize: "vertical", minHeight: "104px" }} />
+              <span style={fieldCap}>{t.contact.f_message}</span>
+              <textarea className="contact-input" name="message" required rows={4} placeholder={t.contact.ph_message} style={{ resize: "vertical", minHeight: "104px" }} />
             </label>
 
             {/* honeypot anti-spam (escondido) */}
@@ -213,7 +199,7 @@ export function Contact() {
                   gap: "9px",
                   padding: "13px 24px",
                   background: "var(--c-p)",
-                  color: "#fff",
+                  color: "var(--c-onp)",
                   border: "none",
                   borderRadius: "10px",
                   fontFamily: "JetBrains Mono, monospace",
@@ -226,17 +212,17 @@ export function Contact() {
                 onMouseEnter={(e) => { if (status !== "sending") e.currentTarget.style.transform = "translateY(-1px)"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.transform = "none"; }}
               >
-                {status === "sending" ? "enviando…" : status === "ok" ? "enviada ✓" : "Enviar mensagem →"}
+                {status === "sending" ? t.contact.sending : status === "ok" ? t.contact.sent : t.contact.send}
               </button>
 
               {status === "ok" && (
-                <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "12.5px", color: "#28c840" }}>
-                  valeu! respondo em breve.
+                <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "12.5px", color: "var(--c-fg)" }}>
+                  {t.contact.ok}
                 </span>
               )}
               {status === "error" && (
-                <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "12.5px", color: "#ff5f57" }}>
-                  algo deu errado — tenta de novo ou chama no WhatsApp.
+                <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "12.5px", color: "var(--c-muted)" }}>
+                  {t.contact.error}
                 </span>
               )}
             </div>
@@ -263,7 +249,7 @@ export function Contact() {
               fontSize: "13.5px",
               marginBottom: "18px",
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(139,92,246,0.18)"; }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = "var(--c-pb)"; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = "var(--c-pd)"; }}
           >
             <span style={{ color: "var(--c-p)" }}>{ICON.whatsapp}</span>
@@ -318,7 +304,7 @@ export function Contact() {
         }}
       >
         <span>© {new Date().getFullYear()} Guilherme Ferrarezi</span>
-        <span>feito com <span style={{ color: "var(--c-p)" }}>♥</span> em Ribeirão Preto</span>
+        <span>{t.contact.footer_made}</span>
       </footer>
     </section>
   );

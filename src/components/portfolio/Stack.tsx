@@ -105,7 +105,7 @@ export function Stack() {
               width: "1px",
               flex: 1,
               minHeight: "200px",
-              background: "linear-gradient(to bottom, var(--c-p) 0%, rgba(139,92,246,0.3) 80%, transparent 100%)",
+              background: "linear-gradient(to bottom, var(--c-p) 0%, var(--c-ps) 80%, transparent 100%)",
             }}
           />
         </div>

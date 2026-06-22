@@ -26,7 +26,8 @@ test.describe("Desktop 1280", () => {
   });
 
   test("hero", async ({ page }) => {
-    await page.waitForTimeout(500);
+    await page.mouse.move(900, 300);
+    await page.waitForTimeout(3000);
     await page.screenshot({ path: "tests/screenshots/new-pc-00-hero.png" });
   });
 
@@ -94,6 +95,15 @@ test.describe("Desktop 1280", () => {
     await page.evaluate(() => window.scrollBy({ top: 500, behavior: "instant" }));
     await page.waitForTimeout(1200);
     await page.screenshot({ path: "tests/screenshots/new-pc-07-contato.png" });
+  });
+
+  test("contato EN", async ({ page }) => {
+    await page.getByRole("button", { name: "Trocar idioma" }).click();
+    await page.waitForTimeout(300);
+    await scrollToId(page, "contato");
+    await page.evaluate(() => window.scrollBy({ top: 500, behavior: "instant" }));
+    await page.waitForTimeout(1000);
+    await page.screenshot({ path: "tests/screenshots/new-pc-09-contato-en.png" });
   });
 
   test("transicao projetos-contato", async ({ page }) => {
