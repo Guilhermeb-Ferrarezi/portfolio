@@ -116,6 +116,7 @@ export function Hero() {
     let flowPts: { x: number; y: number }[] = [];
     let nameParts: { x: number; y: number; tx: number; ty: number }[] = [];
     let dot = 3;
+    let lastW = 0, lastH = 0;
     let tt = 0;
     const FLOW_N = reduced ? 0 : 200;
 
@@ -126,9 +127,15 @@ export function Hero() {
       o.fillStyle = "#fff";
       o.textAlign = "center";
       o.textBaseline = "middle";
-      // fonte maior proporcionalmente no mobile pra o nome não ficar minúsculo
-      const fs = W < 600 ? Math.min(W * 0.165, 110) : Math.min(W * 0.12, 158);
+      // fonte maior proporcionalmente no mobile, mas reduzida até caber na largura
+      let fs = W < 600 ? W * 0.18 : Math.min(W * 0.12, 158);
       o.font = `900 ${fs}px "Space Grotesk", sans-serif`;
+      const maxW = W * 0.9;
+      const tw = Math.max(o.measureText(NAME[0]).width, o.measureText(NAME[1]).width);
+      if (tw > maxW) {
+        fs = (fs * maxW) / tw; // encolhe pra "Guilherme"/"Ferrarezi" não estourar
+        o.font = `900 ${fs}px "Space Grotesk", sans-serif`;
+      }
       o.fillText(NAME[0], W / 2, H / 2 - fs * 0.5);
       o.fillText(NAME[1], W / 2, H / 2 + fs * 0.52);
       const d = o.getImageData(0, 0, W, H).data;
@@ -143,8 +150,12 @@ export function Hero() {
     }
 
     function resize() {
-      W = flow!.width = nameCv!.width = window.innerWidth;
-      H = flow!.height = nameCv!.height = window.innerHeight;
+      const newW = window.innerWidth, newH = window.innerHeight;
+      // no mobile a barra de URL muda só a altura ao rolar — ignora (senão o nome "se desfaz")
+      if (newW === lastW && Math.abs(newH - lastH) < 140 && nameParts.length) return;
+      lastW = newW; lastH = newH;
+      W = flow!.width = nameCv!.width = newW;
+      H = flow!.height = nameCv!.height = newH;
       fctx.clearRect(0, 0, W, H);
       flowPts = Array.from({ length: FLOW_N }, () => ({ x: Math.random() * W, y: Math.random() * H }));
       buildName();

@@ -47,9 +47,9 @@ export function Preloader({ onComplete }: Props) {
   const charStyle = {
     display: "inline-block" as const,
     fontFamily: "Space Grotesk, sans-serif",
-    fontSize: "clamp(3.2rem, 8vw, 7.5rem)",
+    fontSize: "clamp(3.2rem, 2vw, 5rem)",
     fontWeight: 900,
-    letterSpacing: "-.045em",
+    letterSpacing: "-.035em",
     lineHeight: 0.93,
   };
 
