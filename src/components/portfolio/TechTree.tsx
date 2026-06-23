@@ -81,7 +81,7 @@ const TIERS = [
 ];
 
 // Logos monocromáticos pretos — invertem pra branco no tema escuro
-const DARK_LOGOS = new Set(["github", "nextjs", "vercel"]);
+const DARK_LOGOS = new Set(["github", "nextjs", "vercel", "shadcn", "radix"]);
 
 function TechPill({ id, locale }: { id: string; locale: "pt" | "en" }) {
   const tech = TECHS[id];

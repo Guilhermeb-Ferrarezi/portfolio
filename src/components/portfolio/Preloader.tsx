@@ -76,7 +76,7 @@ export function Preloader({ onComplete }: Props) {
   const charStyle = {
     display: "inline-block" as const,
     fontFamily: "Space Grotesk, sans-serif",
-    fontSize: "clamp(2rem, 2.8rem, 10rem)",
+    fontSize: "clamp(2rem, 12vw, 4rem)",
     fontWeight: 900,
     letterSpacing: "-.035em",
     lineHeight: 0.93,
@@ -139,7 +139,7 @@ export function Preloader({ onComplete }: Props) {
         }}
       >
         {/* Linha 1 — branco */}
-        <div style={{ overflow: "hidden" }}>
+        <div style={{ overflow: "hidden", whiteSpace: "nowrap" }}>
           {L1.split("").map((ch, i) => (
             <span key={i} className="pre-char" style={{ ...charStyle, color: "#f0f0f0" }}>
               {ch}
@@ -148,7 +148,7 @@ export function Preloader({ onComplete }: Props) {
         </div>
 
         {/* Linha 2 — roxo */}
-        <div style={{ overflow: "hidden" }}>
+        <div style={{ overflow: "hidden", whiteSpace: "nowrap" }}>
           {L2.split("").map((ch, i) => (
             <span key={i} className="pre-char" style={{ ...charStyle, color: "var(--c-p)" }}>
               {ch}

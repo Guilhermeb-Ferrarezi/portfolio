@@ -75,155 +75,12 @@ class TextScramble {
   }
 }
 
-const NAME = ["Guilherme", "Ferrarezi"];
-
-function readVar(name: string, fallback: string) {
-  const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-  return v || fallback;
-}
-function hexToRgb(hex: string): [number, number, number] {
-  let h = hex.replace("#", "");
-  if (h.length === 3) h = h.split("").map((c) => c + c).join("");
-  const n = parseInt(h, 16);
-  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
-}
-
 export function Hero() {
   const { t } = useT();
-  const flowRef = useRef<HTMLCanvasElement>(null);
-  const nameRef = useRef<HTMLCanvasElement>(null);
   const cycleRef = useRef<HTMLSpanElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    const flow = flowRef.current;
-    const nameCv = nameRef.current;
-    if (!flow || !nameCv) return;
-    const fctx = flow.getContext("2d")!;
-    const nctx = nameCv.getContext("2d")!;
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const isMobile = window.matchMedia("(max-width: 768px)").matches;
-
-    // Traços/partículas em branco no dark, preto no light (segue o texto do tema)
-    let ink: [number, number, number] = hexToRgb(readVar("--c-fg", "#f0f0f0"));
-    let bg: [number, number, number] = hexToRgb(readVar("--c-bg", "#070707"));
-    const themeObs = new MutationObserver(() => {
-      ink = hexToRgb(readVar("--c-fg", "#f0f0f0"));
-      bg = hexToRgb(readVar("--c-bg", "#070707"));
-    });
-    themeObs.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
-
-    let W = 0, H = 0;
-    let flowPts: { x: number; y: number }[] = [];
-    let nameParts: { x: number; y: number; tx: number; ty: number }[] = [];
-    let dot = 3;
-    let lastW = 0, lastH = 0;
-    let tt = 0;
-    const FLOW_N = reduced ? 0 : isMobile ? 130 : 200;
-
-    function buildName() {
-      const off = document.createElement("canvas");
-      off.width = W; off.height = H;
-      const o = off.getContext("2d")!;
-      o.fillStyle = "#fff";
-      o.textAlign = "center";
-      o.textBaseline = "middle";
-      // fonte maior proporcionalmente no mobile, mas reduzida até caber na largura
-      let fs = W < 600 ? W * 0.18 : Math.min(W * 0.12, 158);
-      o.font = `900 ${fs}px "Space Grotesk", sans-serif`;
-      const maxW = W * 0.9;
-      const tw = Math.max(o.measureText(NAME[0]).width, o.measureText(NAME[1]).width);
-      if (tw > maxW) {
-        fs = (fs * maxW) / tw; // encolhe pra "Guilherme"/"Ferrarezi" não estourar
-        o.font = `900 ${fs}px "Space Grotesk", sans-serif`;
-      }
-      o.fillText(NAME[0], W / 2, H / 2 - fs * 0.5);
-      o.fillText(NAME[1], W / 2, H / 2 + fs * 0.52);
-      const d = o.getImageData(0, 0, W, H).data;
-      // bolinhas mais espaçadas (visual pontilhado mais simples/limpo)
-      const gap = Math.max(5, Math.round(fs / 18));
-      dot = gap >= 7 ? 3 : 2;
-      const targets: [number, number][] = [];
-      for (let y = 0; y < H; y += gap) for (let x = 0; x < W; x += gap) {
-        if (d[(y * W + x) * 4 + 3] > 128) targets.push([x, y]);
-      }
-      nameParts = targets.map(([x, y]) => ({ x: Math.random() * W, y: Math.random() * H, tx: x, ty: y }));
-    }
-
-    function resize() {
-      const newW = window.innerWidth, newH = window.innerHeight;
-      // no mobile a barra de URL muda só a altura ao rolar — ignora (não reseta o canvas)
-      if (newW === lastW && Math.abs(newH - lastH) < 140 && lastW !== 0) return;
-      lastW = newW; lastH = newH;
-      W = flow!.width = nameCv!.width = newW;
-      H = flow!.height = nameCv!.height = newH;
-      fctx.clearRect(0, 0, W, H);
-      flowPts = Array.from({ length: FLOW_N }, () => ({ x: Math.random() * W, y: Math.random() * H }));
-      if (!isMobile) buildName(); // no mobile o nome é texto (CSS); o canvas só desenha o flow
-    }
-    // O flow (traços) roda em todo lugar (leve); o nome em partículas é só no desktop
-    resize();
-    window.addEventListener("resize", resize);
-    if (!isMobile) document.fonts.ready.then(() => buildName());
-
-    const mouse = { x: -999, y: -999 };
-    const onMove = (e: MouseEvent) => { mouse.x = e.clientX; mouse.y = e.clientY; };
-    window.addEventListener("mousemove", onMove);
-
-    // Loop com cap de FPS
-    const FPS = reduced ? 8 : 30;
-    const interval = 1000 / FPS;
-    let acc = 0, prev = performance.now();
-    let rafId = 0, running = false, inView = true;
-
-    const frame = (now: number) => {
-      rafId = requestAnimationFrame(frame);
-      acc += now - prev; prev = now;
-      if (acc < interval) return;
-      acc = 0;
-      const [r, g, b] = ink;
-
-      // Flow field (traços) — rastro com a cor de fundo
-      tt += 0.0022;
-      fctx.fillStyle = `rgba(${bg[0]},${bg[1]},${bg[2]},0.085)`;
-      fctx.fillRect(0, 0, W, H);
-      fctx.strokeStyle = `rgba(${r},${g},${b},0.28)`;
-      fctx.lineWidth = 1;
-      for (const p of flowPts) {
-        const a = Math.sin(p.x * 0.0024 + tt) * Math.cos(p.y * 0.0024 - tt) * Math.PI * 2;
-        const nx = p.x + Math.cos(a) * 2, ny = p.y + Math.sin(a) * 2;
-        fctx.beginPath();
-        fctx.moveTo(p.x, p.y);
-        fctx.lineTo(nx, ny);
-        fctx.stroke();
-        p.x = nx; p.y = ny;
-        if (p.x < 0 || p.x > W || p.y < 0 || p.y > H) { p.x = Math.random() * W; p.y = Math.random() * H; }
-      }
-
-      // Nome em partículas
-      nctx.clearRect(0, 0, W, H);
-      nctx.fillStyle = `rgba(${r},${g},${b},0.95)`;
-      for (const p of nameParts) {
-        p.x += (p.tx - p.x) * 0.09;
-        p.y += (p.ty - p.y) * 0.09;
-        const dx = p.x - mouse.x, dy = p.y - mouse.y, md = Math.hypot(dx, dy);
-        if (md < 80) { p.x += (dx / md) * 4; p.y += (dy / md) * 4; }
-        nctx.fillRect(p.x, p.y, dot, dot);
-      }
-    };
-
-    const start = () => { if (running) return; running = true; prev = performance.now(); rafId = requestAnimationFrame(frame); };
-    const stop = () => { running = false; if (rafId) cancelAnimationFrame(rafId); rafId = 0; };
-
-    const io = new IntersectionObserver(([e]) => {
-      inView = e.isIntersecting;
-      if (inView && !document.hidden) start(); else stop();
-    }, { threshold: 0 });
-    const onVis = () => { if (document.hidden) stop(); else if (inView) start(); };
-    io.observe(flow);
-    document.addEventListener("visibilitychange", onVis);
-    start();
-
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
       tl.to("#hero-badge", { opacity: 1, y: 0, duration: 0.6 }, 0.2)
@@ -249,15 +106,7 @@ export function Hero() {
       });
     });
 
-    return () => {
-      stop();
-      io.disconnect();
-      themeObs.disconnect();
-      document.removeEventListener("visibilitychange", onVis);
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("resize", resize);
-      ctx.revert();
-    };
+    return () => ctx.revert();
   }, []);
 
   // Ciclo do badge (frases traduzidas) — efeito próprio: troca de idioma NÃO
@@ -286,11 +135,11 @@ export function Hero() {
       ref={sectionRef}
       style={{ position: "relative", height: "100vh", minHeight: "600px", overflow: "hidden", background: "var(--c-bg)" }}
     >
-      {/* Flow field (traços) — roda em desktop e mobile (leve) */}
-      <canvas ref={flowRef} className="hero-canvas-flow" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 0 }} />
-      {/* Nome em partículas — só no desktop (no mobile vira texto) */}
-      <canvas ref={nameRef} className="hero-canvas-name" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 1 }} />
-
+      {/* Fundo em CSS puro — grade de pontos + brilhos roxos flutuando (só composição, sem canvas) */}
+      <div className="hero-bg" aria-hidden="true">
+        <div className="hero-orb hero-orb-a" />
+        <div className="hero-orb hero-orb-b" />
+      </div>
       {/* Gradiente de profundidade */}
       <div
         style={{
@@ -386,7 +235,7 @@ export function Hero() {
               href="https://wa.me/5516996129511"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ padding: "11px 20px", background: "var(--c-s)", color: "var(--c-fg)", border: "1px solid var(--c-b)", borderRadius: "10px", fontSize: "14px", fontFamily: "Inter, sans-serif", fontWeight: 500, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "8px", backdropFilter: "blur(8px)", transition: "all .15s" }}
+              style={{ padding: "11px 20px", background: "var(--c-s)", color: "var(--c-fg)", border: "1px solid var(--c-b)", borderRadius: "10px", fontSize: "14px", fontFamily: "Inter, sans-serif", fontWeight: 500, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "8px", transition: "all .15s" }}
               onMouseEnter={(e) => { e.currentTarget.style.borderColor = "var(--c-bh)"; e.currentTarget.style.background = "var(--c-sh)"; }}
               onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--c-b)"; e.currentTarget.style.background = "var(--c-s)"; }}
             >
@@ -398,7 +247,7 @@ export function Hero() {
               href="https://github.com/Guilhermeb-Ferrarezi"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ padding: "11px 20px", background: "var(--c-s)", color: "var(--c-fg)", border: "1px solid var(--c-b)", borderRadius: "10px", fontSize: "14px", fontFamily: "Inter, sans-serif", fontWeight: 500, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "8px", backdropFilter: "blur(8px)", transition: "all .15s" }}
+              style={{ padding: "11px 20px", background: "var(--c-s)", color: "var(--c-fg)", border: "1px solid var(--c-b)", borderRadius: "10px", fontSize: "14px", fontFamily: "Inter, sans-serif", fontWeight: 500, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "8px", transition: "all .15s" }}
               onMouseEnter={(e) => { e.currentTarget.style.borderColor = "var(--c-bh)"; e.currentTarget.style.background = "var(--c-sh)"; }}
               onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--c-b)"; e.currentTarget.style.background = "var(--c-s)"; }}
             >

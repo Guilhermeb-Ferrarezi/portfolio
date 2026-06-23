@@ -185,6 +185,44 @@
 
 .animate-marquee { animation: marquee 28s linear infinite; }
 
+/* ── NEVE (CSS puro: box-shadow + translateY, sem canvas) ── */
+.snow-wrap { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 6; }
+.snow-col { position: absolute; inset: 0; animation: snow-fall linear infinite; will-change: transform; }
+.snow-dot { position: absolute; top: 0; left: 0; border-radius: 50%; background: #9a9a9a; }
+.snow-dot--up { transform: translateY(-100vh); } /* 2ª cópia: garante loop contínuo sem salto */
+@keyframes snow-fall { to { transform: translateY(100vh); } }
+@media (prefers-reduced-motion: reduce) { .snow-col { animation: none !important; } }
+
+/* ── HERO BACKGROUND (CSS puro, sem canvas animado) ─────── */
+.hero-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+/* grade de pontos sutil, esmaecida nas bordas por uma máscara radial */
+.hero-bg::before {
+  content: ""; position: absolute; inset: -2px;
+  background-image: radial-gradient(circle, var(--c-b) 1px, transparent 1.4px);
+  background-size: 30px 30px;
+  opacity: 0.6;
+  -webkit-mask-image: radial-gradient(ellipse 72% 62% at 50% 44%, #000 32%, transparent 78%);
+  mask-image: radial-gradient(ellipse 72% 62% at 50% 44%, #000 32%, transparent 78%);
+}
+/* brilhos roxos que flutuam devagar — só transform (composição GPU barata, sem repaint) */
+.hero-orb {
+  position: absolute; width: 52vw; height: 52vw; max-width: 680px; max-height: 680px;
+  border-radius: 50%; will-change: transform;
+}
+.hero-orb-a {
+  left: 4%; top: 8%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--c-p) 20%, transparent), transparent 66%);
+  animation: hero-orb-a 22s ease-in-out infinite;
+}
+.hero-orb-b {
+  right: 2%; bottom: 2%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--c-p) 14%, transparent), transparent 68%);
+  animation: hero-orb-b 28s ease-in-out infinite;
+}
+@keyframes hero-orb-a { 0%, 100% { transform: translate(-8%, -6%); } 50% { transform: translate(10%, 8%); } }
+@keyframes hero-orb-b { 0%, 100% { transform: translate(7%, 6%); } 50% { transform: translate(-9%, -7%); } }
+@media (prefers-reduced-motion: reduce) { .hero-orb { animation: none !important; } }
+
 /* ── TECH TREE ──────────────────────────────────────────── */
 .tech-node {
   transition: border-color 0.18s, background 0.18s, transform 0.18s, box-shadow 0.18s;
@@ -219,30 +257,24 @@
 .contact-input:focus { border-color: var(--c-ps); background: var(--c-sh); }
 .contact-input::placeholder { color: var(--c-mid); }
 
-/* Hero: nome em texto — sr-only no desktop (canvas mostra), título no mobile */
+/* Hero: nome em texto com brilho roxo varrendo (desktop e mobile) */
 .hero-name-text {
-  position: absolute; width: 1px; height: 1px; overflow: hidden;
-  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; margin: 0;
+  display: flex; flex-direction: column; gap: 6px; margin: 0;
+  font-family: "Space Grotesk", sans-serif; font-weight: 900;
+  font-size: clamp(3rem, 8.5vw, 8.5rem); line-height: 0.92; letter-spacing: -0.045em;
+  text-align: center; user-select: none;
+  background: linear-gradient(100deg, var(--c-fg) 35%, var(--c-p) 50%, var(--c-fg) 65%);
+  background-size: 220% auto;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+  animation: hero-shine 5s linear infinite;
 }
+.hero-name-text span { white-space: nowrap; }
 
 /* ── RESPONSIVE ─────────────────────────────────────────── */
 @media (max-width: 768px) {
-  /* hero: mantém o flow (leve), esconde só o nome-partículas; nome vira texto com brilho */
-  .hero-canvas-name { display: none !important; }
-  .hero-name-text {
-    position: static; width: auto; height: auto; overflow: visible; clip: auto; clip-path: none;
-    display: flex; flex-direction: column; gap: 2px;
-    font-family: "Space Grotesk", sans-serif; font-weight: 900;
-    font-size: clamp(2.6rem, 13.5vw, 4.2rem); line-height: 0.96; letter-spacing: -0.04em;
-    text-align: center; margin: 0;
-    /* diferencial: brilho roxo varrendo o nome */
-    background: linear-gradient(100deg, var(--c-fg) 35%, var(--c-p) 50%, var(--c-fg) 65%);
-    background-size: 220% auto;
-    -webkit-background-clip: text; background-clip: text;
-    -webkit-text-fill-color: transparent; color: transparent;
-    animation: hero-shine 5s linear infinite;
-  }
-  .hero-name-text span { white-space: nowrap; }
+  /* nome: menor no mobile */
+  .hero-name-text { font-size: clamp(2.6rem, 13.5vw, 4.2rem); gap: 2px; line-height: 0.96; }
   /* linha lateral: esconde no mobile */
   .side-line { display: none !important; }
 

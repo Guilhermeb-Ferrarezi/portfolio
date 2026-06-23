@@ -10,7 +10,9 @@ import { Preloader } from "@/components/portfolio/Preloader";
 import { SectionArrow } from "@/components/portfolio/SectionArrow";
 import { TechTree } from "@/components/portfolio/TechTree";
 import { I18nProvider, useT } from "@/i18n/I18nContext";
-import {Snowfall} from "react-snowfall"
+import { Snow } from "@/components/portfolio/Snow";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -24,9 +26,7 @@ function TopControls({ isLight, toggleTheme }: { isLight: boolean; toggleTheme: 
     justifyContent: "center",
     borderRadius: "10px",
     border: "1px solid var(--c-b)",
-    background: "var(--c-ov)",
-    backdropFilter: "blur(16px)",
-    WebkitBackdropFilter: "blur(16px)",
+    background: "var(--c-s)",
     color: "var(--c-muted)",
     cursor: "pointer",
     transition: "border-color .15s, color .15s",
@@ -145,7 +145,9 @@ function AppInner() {
       <TechTree />
       <Projects />
       <Contact />
-      <Snowfall color="#9a9a9a" snowflakeCount={120}/>
+      <Snow />
+      <Analytics />
+      <SpeedInsights />
     </div>
   );
 }
